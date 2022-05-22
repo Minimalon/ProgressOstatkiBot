@@ -17,8 +17,8 @@ import config, cashInfo
 
 # def get_last_file(cash):
 #     cash = 'cash-' + cash
-#     cash_info = [line.split() for line in open('/linuxcash/net/server/server/info.txt', 'r') if re.search(cash, line)]
-#     path = '/linuxcash/net/server/server/ostatki/' + cash_info[0][1] + '/' + cash_info[0][2] + '/xls'
+#     cash_info = [line.split() for line in open(linuxcasneserveserveinfo.txt', 'r') if re.search(cash, line)]
+#     path = linuxcasneserveserveostatk' + cash_info[0][1] + ' + cash_info[0][2] + xls'
 #     files = os.listdir(path)
 #     files = [os.path.join(path, file) for file in files]
 #     files = [file for file in files if os.path.isfile(file)]
@@ -26,8 +26,8 @@ import config, cashInfo
 #
 # def get_last_files(cash, amount):
 #     cash = 'cash-' + cash
-#     cash_info = [line.split() for line in open('/linuxcash/net/server/server/info.txt', 'r') if re.search(cash, line)]
-#     cash_path = '/linuxcash/net/server/server/ostatki/' + cash_info[0][1] + '/' + cash_info[0][2] + '/xls'
+#     cash_info = [line.split() for line in open(linuxcasneserveserveinfo.txt', 'r') if re.search(cash, line)]
+#     cash_path = linuxcasneserveserveostatk' + cash_info[0][1] + ' + cash_info[0][2] + xls'
 #     files = os.listdir(cash_path)
 #     files = [os.path.join(cash_path, file) for file in files]
 #     files = [file for file in files if os.path.isfile(file)]
@@ -37,9 +37,9 @@ import config, cashInfo
 
 def get_last_file(cash):
     cash = 'cash-' + cash
-    cash_info = [line.split() for line in open('\\\\192.168.2.30\\share\\\\server\\info.txt', 'r')
+    cash_info = [line.split() for line in open('/linuxcash/net/server/server/info.txt', 'r')
                  if re.search(cash, line)]
-    path = '\\\\192.168.2.30\\share\\server\\ostatki\\' + cash_info[0][1] + '\\' + cash_info[0][2] + '\\xls'
+    path = '/linuxcash/net/server/server/ostatki/' + cash_info[0][1] + '/' + cash_info[0][2] + '/xls'
     files = os.listdir(path)
     files = [os.path.join(path, file) for file in files]
     files = [file for file in files if os.path.isfile(file)]
@@ -48,9 +48,9 @@ def get_last_file(cash):
 
 def get_last_files(cash, amount):
     cash = 'cash-' + cash
-    cash_info = [line.split() for line in open('\\\\192.168.2.30\\share\\\\server\\info.txt', 'r') if
+    cash_info = [line.split() for line in open('/linuxcash/net/server/server/info.txt', 'r') if
                  re.search(cash, line)]
-    cash_path = '\\\\192.168.2.30\\share\\server\\ostatki\\' + cash_info[0][1] + "\\" + cash_info[0][2] + '\\xls'
+    cash_path = '/linuxcash/net/server/server/ostatki/' + cash_info[0][1] + "/" + cash_info[0][2] + '/xls'
     files = os.listdir(cash_path)
     files = [os.path.join(cash_path, file) for file in files]
     files = [file for file in files if os.path.isfile(file)]
@@ -105,8 +105,8 @@ def get_valid_barcode(barcode):
         barcode += "0000"
     if len(barcode) == 4:
         barcode += "000"
-    count_busy_barcode = [barcode for line in open('logs/busy_barcode.txt', 'r') if re.search(barcode, line)]
-    with open('logs/busy_barcode.txt', 'a') as file:
+    count_busy_barcode = [barcode for line in open(config.dir_path + 'logs/busy_barcode.txt', 'r') if re.search(barcode, line)]
+    with open(config.dir_path + 'logs/busy_barcode.txt', 'a') as file:
         barcode = barcode + str(len(count_busy_barcode))
         file.write(str(barcode) + '\n')
     return str(barcode)
@@ -114,10 +114,11 @@ def get_valid_barcode(barcode):
 
 def generate_barcode(barcode_number):
     my_code = Code128(barcode_number, writer=ImageWriter())
-    my_code.save("barcode", options={"write_text": False})
+    my_code.save(config.dir_path + "logs/barcode", options={"write_text": False})
 
 
 def resize_canvas(old_image_path, msg):
+    print(old_image_path)
     im = Image.open(old_image_path)
     old_width, old_height = im.size
 
@@ -147,7 +148,7 @@ def resize_canvas(old_image_path, msg):
     newImage.paste(im, (x1, y1, x1 + old_width, y1 + old_height))
     draw = ImageDraw.Draw(newImage)
 
-    font = ImageFont.truetype("Ermilov-bold.otf", 18)
+    font = ImageFont.truetype(config.dir_path + "Ermilov-bold.otf", 18)
 
     width_text, height_text = font.getsize(msg)
 

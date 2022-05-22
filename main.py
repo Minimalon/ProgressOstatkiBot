@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import telebot
@@ -12,7 +12,7 @@ import functions
 import cashInfo
 
 bot = telebot.TeleBot(config.token)
-logger.add('logs/debug.log',
+logger.add(config.dir_path + 'logs/debug.log',
            level='DEBUG', rotation='10 MB', compression='zip')
 
 
@@ -29,7 +29,7 @@ def start(message):
 
 
 @bot.message_handler(content_types=['text'])
-@logger.catch()
+@logger.catch
 def catalog(message):
     if message.text.lower() == 'получить остатки':
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
@@ -119,7 +119,7 @@ def send_dates_files(message):
         if re.fullmatch(regex, message.text):
             cash_files = functions.get_last_files(message.text, 6)
             markup = types.ReplyKeyboardMarkup(row_width=3)
-            cash_dates = [line.split("\\")[-1] for line in cash_files]  # Берём только название файла
+            cash_dates = [line.split("/")[-1] for line in cash_files]  # Берём только название файла
             # cash_dates = [line.split("/")[-1] for line in cash_files]  # Берём только даты
             cash_dates = [line.split("_")[0:3] for line in cash_dates]  # Берём только даты из названия файла
             for line in cash_dates:
@@ -237,16 +237,16 @@ def get_bcode_send(message):
             cashInfo.bcode_name = name
             cashInfo.bcode = functions.get_valid_barcode(cashInfo.bcode_cash_number)
             functions.generate_barcode(cashInfo.bcode)
-            functions.resize_canvas('logs/barcode.png', name)
-            cashInfo.current_path_file = 'logs/barcode.png'
+            cashInfo.current_path_file = config.dir_path + 'logs/barcode.png'
+            logger.info(config.dir_path + 'logs/barcode.png')
+            functions.resize_canvas(config.dir_path + 'logs/barcode.png', name)
             markup = types.InlineKeyboardMarkup()
             markup.add(types.InlineKeyboardButton('Отправить на почту', callback_data='cb_send_email'))
-            bot.send_photo(message.chat.id, open('logs/barcode.png', 'rb'), reply_markup=markup)
+            bot.send_photo(message.chat.id, open(config.dir_path + 'logs/barcode.png', 'rb'), reply_markup=markup)
             bot.send_message(message.chat.id, 'Товар в скором времени будет добавлен к вам на кассу\n\n'
                                               'Касса обязательно должна быть <u><b>включена</b></u> и должен быть <u><b>интернет</b></u>',
                              reply_markup=start_markup(), parse_mode='html')
-
-            with open('\\\\192.168.2.30\\share\\\\server\\telegram_barcode.txt', 'a') as barcodes_file: # Инфа для скрипта, который будет добавлять на компы штрихкода
+            with open('/linuxcash/server/net/net/telegram_barcode.txt', 'a') as barcodes_file: # Инфа для скрипта, который будет добавлять на компы штрихкода
                 barcodes_file.write(
                     'cash-' + cashInfo.bcode_cash_number + "|" + cashInfo.bcode + '|' + cashInfo.bcode_otdel + '|' + cashInfo.bcode_name + '\n')
                 logger.info(
@@ -255,11 +255,7 @@ def get_bcode_send(message):
             logger.debug("Название товара не прошла проверку " + message.text + " - " + len(message.text))
             bot.send_message(message.chat.id, 'Название товара введено не верно. Максимальная длина 35 символов',
                              reply_markup=start_markup())
-
     except Exception as ex:
-        bot.send_message(message.chat.id, 'Название товара введено не верно. Максимальная длина 35 символов',
-                         reply_markup=start_markup())
-        logger.debug("Название товара не прошла проверку " + message.text + " - " + str(len(message.text)))
         logger.error(ex)
 
 

@@ -83,3 +83,78 @@
 
 2022-05-21 08:31:17.396 | INFO     | __main__:get_bcode_send:252 - Добавил: cash-1-1|10000006|2|аываыва
 
+2022-05-22 08:19:11.812 | DEBUG    | __main__:get_bcode_send:262 - Название товара не прошла проверку fsdfsdf - 7
+2022-05-22 08:19:11.813 | ERROR    | __main__:get_bcode_send:263 - cannot identify image file 'logs/barcode.png'
+2022-05-22 08:20:33.684 | DEBUG    | __main__:get_bcode_send:262 - Название товара не прошла проверку sdaffsd - 7
+2022-05-22 08:20:33.685 | ERROR    | __main__:get_bcode_send:263 - cannot identify image file './logs/barcode.png'
+2022-05-22 08:23:15.040 | DEBUG    | __main__:get_bcode_send:262 - Название товара не прошла проверку sdfsfd - 6
+2022-05-22 08:23:15.041 | ERROR    | __main__:get_bcode_send:263 - cannot identify image file './logs/barcode.png'
+2022-05-22 08:24:39.828 | DEBUG    | __main__:get_bcode_send:262 - Название товара не прошла проверку fsdfsd - 6
+2022-05-22 08:24:39.828 | ERROR    | __main__:get_bcode_send:263 - unknown file format
+2022-05-22 08:26:12.001 | DEBUG    | __main__:get_bcode_send:262 - Название товара не прошла проверку sdfsdf - 6
+2022-05-22 08:26:12.002 | ERROR    | __main__:get_bcode_send:263 - unknown file format
+2022-05-22 08:26:55.817 | DEBUG    | __main__:get_bcode_send:262 - Название товара не прошла проверку fsdfsd - 6
+2022-05-22 08:26:55.817 | ERROR    | __main__:get_bcode_send:263 - unknown file format
+2022-05-22 08:28:45.413 | DEBUG    | __main__:get_bcode_send:262 - Название товара не прошла проверку fdgfg - 5
+2022-05-22 08:28:45.413 | ERROR    | __main__:get_bcode_send:263 - unknown file format
+2022-05-22 08:31:08.535 | DEBUG    | __main__:get_bcode_send:262 - Название товара не прошла проверку sdfsd - 5
+2022-05-22 08:31:08.536 | ERROR    | __main__:get_bcode_send:263 - unknown file format
+2022-05-22 08:31:59.108 | DEBUG    | __main__:get_bcode_send:264 - Название товара не прошла проверку fsdfsd - 6
+2022-05-22 08:31:59.108 | ERROR    | __main__:get_bcode_send:265 - unknown file format
+2022-05-22 08:34:58.829 | DEBUG    | __main__:get_bcode_send:264 - Название товара не прошла проверку вава - 4
+2022-05-22 08:34:58.829 | ERROR    | __main__:get_bcode_send:265 - unknown file format
+2022-05-22 08:35:52.012 | DEBUG    | __main__:get_bcode_send:264 - Название товара не прошла проверку аываыв - 6
+2022-05-22 08:35:52.013 | ERROR    | __main__:get_bcode_send:265 - unknown file format
+2022-05-22 08:36:53.676 | DEBUG    | __main__:get_bcode_send:264 - Название товара не прошла проверку авыаыв - 6
+2022-05-22 08:36:53.677 | ERROR    | __main__:get_bcode_send:266 - unknown file format
+2022-05-22 09:46:04.685 | INFO     | __main__:get_bcode_send:254 - Добавил: cash-1-1|100000019|2|dsadas
+
+2022-05-22 16:16:12.054 | DEBUG    | __main__:catalog:68 - Не понимаю данной команды - Пиво
+2022-05-22 16:16:17.761 | DEBUG    | __main__:catalog:68 - Не понимаю данной команды - Пиво
+2022-05-22 16:16:29.851 | INFO     | __main__:get_bcode_send:250 - Добавил: cash-1-1|100000025|2|Пиво
+
+2022-05-22 16:30:18.596 | DEBUG    | __main__:catalog:68 - Не понимаю данной команды - Пиво
+2022-05-22 16:30:28.924 | INFO     | __main__:get_bcode_send:250 - Добавил: cash-1-1|100000030|2|Пиво
+
+2022-05-22 16:33:54.827 | INFO     | __main__:get_bcode_send:250 - Добавил: cash-1-1|100000031|3|Сигареты
+
+2022-05-22 16:39:29.829 | DEBUG    | __main__:catalog:68 - Не понимаю данной команды - Пиво
+2022-05-22 16:39:40.042 | DEBUG    | __main__:catalog:68 - Не понимаю данной команды - Пиво
+2022-05-22 16:39:48.732 | INFO     | __main__:get_bcode_send:241 - resize_canvas complete
+2022-05-22 16:39:49.008 | INFO     | __main__:get_bcode_send:251 - Добавил: cash-1-1|100000035|2|Пиво
+
+2022-05-22 16:42:16.643 | INFO     | __main__:get_bcode_send:233 - Start get_bcode_send
+2022-05-22 16:43:23.005 | INFO     | __main__:get_bcode_send:242 - resize_canvas complete
+2022-05-22 16:43:23.352 | INFO     | __main__:get_bcode_send:252 - Добавил: cash-1-1|100000039|2|Пиво
+
+2022-05-22 16:45:46.637 | INFO     | __main__:get_bcode_send:235 - 1
+2022-05-22 16:47:03.543 | INFO     | __main__:get_bcode_send:236 - 1
+2022-05-22 16:48:36.090 | INFO     | __main__:get_bcode_send:236 - Пиво
+2022-05-22 16:49:56.780 | ERROR    | __main__:gen_bcode_start:208 - name 'cashInfo' is not defined
+2022-05-22 16:51:01.251 | INFO     | __main__:get_bcode_send:236 - Пиво
+2022-05-22 16:52:40.278 | INFO     | __main__:get_bcode_send:236 - Пиво
+2022-05-22 16:55:38.838 | DEBUG    | __main__:gen_bcode_start:203 - Номер кассы введена не правильно - 11
+2022-05-22 17:30:51.755 | ERROR    | __main__:get_bcode_send:264 - name 'logget' is not defined
+2022-05-22 17:31:37.376 | INFO     | __main__:get_bcode_send:239 - 2
+2022-05-22 17:31:37.377 | INFO     | __main__:get_bcode_send:241 - 3
+2022-05-22 17:31:37.386 | INFO     | __main__:get_bcode_send:243 - 4
+2022-05-22 17:31:37.386 | INFO     | __main__:get_bcode_send:245 - 5
+2022-05-22 17:31:37.388 | ERROR    | __main__:get_bcode_send:264 - cannot open resource
+2022-05-22 17:35:38.334 | DEBUG    | __main__:catalog:68 - Не понимаю данной команды - Пиво
+2022-05-22 17:35:41.851 | INFO     | __main__:get_bcode_send:239 - 2
+2022-05-22 17:35:41.853 | INFO     | __main__:get_bcode_send:241 - 3
+2022-05-22 17:35:41.861 | INFO     | __main__:get_bcode_send:243 - 4
+2022-05-22 17:35:41.861 | INFO     | __main__:get_bcode_send:245 - 5
+2022-05-22 17:35:41.862 | ERROR    | __main__:get_bcode_send:264 - cannot open resource
+2022-05-22 17:36:59.457 | INFO     | __main__:get_bcode_send:239 - 2
+2022-05-22 17:36:59.458 | INFO     | __main__:get_bcode_send:241 - 3
+2022-05-22 17:36:59.467 | INFO     | __main__:get_bcode_send:243 - 4
+2022-05-22 17:36:59.467 | INFO     | __main__:get_bcode_send:245 - /home/minimal/ProgressOstatkiBot/logs/barcode.png
+2022-05-22 17:36:59.469 | ERROR    | __main__:get_bcode_send:264 - cannot open resource
+2022-05-22 17:38:50.355 | INFO     | __main__:get_bcode_send:239 - 2
+2022-05-22 17:38:50.357 | INFO     | __main__:get_bcode_send:241 - 3
+2022-05-22 17:38:50.364 | INFO     | __main__:get_bcode_send:243 - 4
+2022-05-22 17:38:50.365 | INFO     | __main__:get_bcode_send:245 - /home/minimal/ProgressOstatkiBot/logs/barcode.png
+2022-05-22 17:38:50.369 | INFO     | __main__:get_bcode_send:247 - resize_canvas complete
+2022-05-22 17:38:50.610 | INFO     | __main__:get_bcode_send:257 - Добавил: cash-1-1|100000043|2|Пиво
+
