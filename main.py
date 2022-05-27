@@ -246,7 +246,7 @@ def get_bcode_send(message):
             bot.send_message(message.chat.id, 'Товар в скором времени будет добавлен к вам на кассу\n\n'
                                               'Касса обязательно должна быть <u><b>включена</b></u> и должен быть <u><b>интернет</b></u>',
                              reply_markup=start_markup(), parse_mode='html')
-            with open('/linuxcash/server/net/net/telegram_barcode.txt', 'a') as barcodes_file: # Инфа для скрипта, который будет добавлять на компы штрихкода
+            with open('/linuxcash/net/server/server/telegram_barcode.txt', 'a') as barcodes_file: # Инфа для скрипта, который будет добавлять на компы штрихкода
                 barcodes_file.write(
                     'cash-' + cashInfo.bcode_cash_number + "|" + cashInfo.bcode + '|' + cashInfo.bcode_otdel + '|' + cashInfo.bcode_name + '\n')
                 logger.info(
