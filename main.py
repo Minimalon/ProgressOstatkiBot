@@ -196,7 +196,7 @@ def gen_bcode_start(message):
             msg = bot.send_message(message.chat.id, 'Выберите какой товар хотите добавить:\n\n'
                                                     '<u><b>Крепкий алкоголь</b></u> - всё что имеет акцизную марку\n\n'
                                                     '<u><b>Пиво</b></u> - любой вид пива\n\n'
-                                                    '<u><b>Сигареты</b></u> - любой вид сигарет>\n\n'
+                                                    '<u><b>Сигареты</b></u> - любой вид сигарет\n\n'
                                                     '<u><b>Прочее</b></u> - товары которые продаются как правило через ИП. Например: мыло, треугольник, хлеб',
                                    reply_markup=markup, parse_mode='html')
             bot.register_next_step_handler(msg, get_bcode_otdel)
