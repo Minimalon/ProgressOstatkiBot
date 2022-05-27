@@ -37,13 +37,13 @@ def catalog(message):
         button_listOstatki = types.KeyboardButton("Список по датам")
         markup.add(button_lastOstatki, button_listOstatki)
         bot.send_message(message.chat.id,
-                         'Последние остатки - Получить последние сгенерированные остатки\n\n'
-                         'Список по датам - Выведем даты последних 6 сгенерированных накладных',
-                         reply_markup=markup)
+                         '<u><b>Последние остатки</u></b> - Получить последние сгенерированные остатки\n\n'
+                         '<u><b>Список по датам</u></b> - Выведем даты последних 6 сгенерированных накладных',
+                         reply_markup=markup, parse_mode='html')
 
     elif message.text.lower() == "последние остатки":
         msg = bot.send_message(message.chat.id,
-                               "Пример: <b>1798-1</b>\n"
+                               "Пример: <u><b>1798-1</b></u>\n"
                                "Где 1798 - это номер компьютера, а 1 - это номер кассы\n\n"
                                "Введите номер компьютера и номер кассы через дефиз:",
                                parse_mode="html")
@@ -51,7 +51,7 @@ def catalog(message):
 
     elif message.text.lower() == "список по датам":
         msg = bot.send_message(message.chat.id,
-                               "Пример: <b>1798-1</b>\n"
+                               "Пример: <u><b>1798-1</b></u>\n"
                                "Где 1798 - это номер компьютера, а 1 - это номер кассы\n\n"
                                "Введите номер компьютера и номер кассы через дефиз:",
                                parse_mode="html")
@@ -59,7 +59,7 @@ def catalog(message):
 
     elif message.text.lower() == "добавить штрихкод":
         msg = bot.send_message(message.chat.id,
-                               "Пример: <b>1798-1</b>\n"
+                               "Пример: <u><b>1798-1</b></u>\n"
                                "Где 1798 - это номер компьютера, а 1 - это номер кассы\n\n"
                                "Введите номер компьютера и номер кассы через дефиз:",
                                parse_mode="html")
