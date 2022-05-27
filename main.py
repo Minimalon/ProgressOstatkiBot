@@ -78,7 +78,7 @@ def callback_query(call):
         except Exception as ex:
             bot.send_message(call.message.chat.id, 'Внутрення ошибка, попробуйте снова',
                              reply_markup=start_markup())
-            logger.error(str(ex))
+            logger.error(f'{ex} --- {cashInfo.cash_number}')
 
 
 def start_markup():
@@ -100,6 +100,7 @@ def send_last_file(message):
 
             # Инфа для глобальной переменной
             cashInfo.current_path_file = functions.get_last_file(message.text)
+            logger.info(f'Отправил последние остатки "{functions.get_last_file(message.text)}" --- {cashInfo.cash_number}')
             bot.send_document(message.chat.id, xlsx, reply_markup=markup)
             bot.send_message(message.chat.id, 'Нам очень приятно что пользуетесь нашим ботом\n\n'
                                               'Оставьте пожалуйста отзыв <u>https://forms.gle/CbUD1SLiNnWcYwz28</u> ',
@@ -110,7 +111,7 @@ def send_last_file(message):
     except Exception as ex:
         bot.send_message(message.chat.id, 'Внутрення ошибка, попробуйте снова',
                          reply_markup=start_markup())
-        logger.error(str(ex))
+        logger.error(f'{ex} --- {cashInfo.cash_number}')
 
 
 def send_dates_files(message):
@@ -142,7 +143,7 @@ def send_dates_files(message):
     except Exception as ex:
         bot.send_message(message.chat.id, 'Внутрення ошибка, попробуйте снова',
                          reply_markup=start_markup())
-        logger.error(str(ex))
+        logger.error(f'{ex} --- {cashInfo.cash_number}')
 
 
 def send_file(message):
@@ -153,7 +154,7 @@ def send_file(message):
 
         # Инфа для глобальной переменной
         cashInfo.current_path_file = path
-
+        logger.info(f'Отправил остатки по выбранной дате "{path}" --- {cashInfo.cash_number}')
         bot.send_document(message.chat.id, open(path, 'rb'), reply_markup=markup)
         bot.send_message(message.chat.id, 'Нам очень приятно что пользуетесь нашим ботом\n\n'
                                           'Оставьте пожалуйста отзыв <u>https://forms.gle/CbUD1SLiNnWcYwz28</u> ',
@@ -161,7 +162,7 @@ def send_file(message):
     except Exception as ex:
         bot.send_message(message.chat.id, 'Внутрення ошибка, попробуйте снова',
                          reply_markup=start_markup())
-        logger.error(str(ex))
+        logger.error(f'{ex} --- {cashInfo.cash_number}')
 
 
 def send_email(message):
@@ -177,7 +178,7 @@ def send_email(message):
     except Exception as ex:
         bot.send_message(message.chat.id, 'Внутрення ошибка, попробуйте снова',
                          reply_markup=start_markup())
-        logger.error(str(ex))
+        logger.error(f'{ex} --- {cashInfo.cash_number} or {cashInfo.bcode_cash_number}')
 
 
 def gen_bcode_start(message):
@@ -205,28 +206,48 @@ def gen_bcode_start(message):
     except Exception as ex:
         bot.send_message(message.chat.id, 'Внутрення ошибка, попробуйте снова',
                          reply_markup=start_markup())
-        logger.error(str(ex))
+        logger.error(f'{ex} --- {cashInfo.bcode_cash_number}')
 
 
 def get_bcode_otdel(message):
     try:
         if message.text.lower() == 'крепкий алкоголь':
             cashInfo.bcode_otdel = '1'
+            bcode = bot.send_message(message.chat.id, 'Напишите штрихкод товара:')
+            bot.register_next_step_handler(bcode, set_barcode)
         elif message.text.lower() == 'пиво':
             cashInfo.bcode_otdel = '2'
+            bcode = bot.send_message(message.chat.id, 'Напишите штрихкод товара:')
+            bot.register_next_step_handler(bcode, set_barcode)
         elif message.text.lower() == 'сигареты':
             cashInfo.bcode_otdel = '3'
+            bcode = bot.send_message(message.chat.id, 'Напишите штрихкод товара:')
+            bot.register_next_step_handler(bcode, set_barcode)
         elif message.text.lower() == 'прочее':
             cashInfo.bcode_otdel = '4'
+            cashInfo.bcode = functions.get_valid_barcode(cashInfo.bcode_cash_number)
         else:
             bot.send_message(message.chat.id, "Не понимаю данной команды")
 
-        msg = bot.send_message(message.chat.id, "Введите короткое название товара:")
-        bot.register_next_step_handler(msg, get_bcode_send)
+
     except Exception as ex:
         bot.send_message(message.chat.id, 'Внутрення ошибка, попробуйте снова',
                          reply_markup=start_markup())
-        logger.error(str(ex))
+        logger.error(f'{ex} --- {cashInfo.bcode_cash_number}')
+
+
+def set_barcode(message):
+    regex = re.compile('^\d+$')
+    if re.fullmatch(regex, message.text):
+        cashInfo.bcode = message.text
+
+        msg = bot.send_message(message.chat.id, "Введите короткое название товара:")
+        bot.register_next_step_handler(msg, get_bcode_send)
+    else:
+        logger.debug(
+            f"Штрихкод неверен {message.text} - длина штрихкода({len(message.text)}) --- {cashInfo.bcode_cash_number}")
+        bot.send_message(message.chat.id, 'Штрихкод должен быть только из цифр. Попробуйте всё с начала',
+                         reply_markup=start_markup())
 
 
 def get_bcode_send(message):
@@ -235,10 +256,8 @@ def get_bcode_send(message):
         if re.fullmatch(regex, message.text):
             name = message.text
             cashInfo.bcode_name = name
-            cashInfo.bcode = functions.get_valid_barcode(cashInfo.bcode_cash_number)
             functions.generate_barcode(cashInfo.bcode)
             cashInfo.current_path_file = config.dir_path + 'logs/barcode.png'
-            logger.info(config.dir_path + 'logs/barcode.png')
             functions.resize_canvas(config.dir_path + 'logs/barcode.png', name)
             markup = types.InlineKeyboardMarkup()
             markup.add(types.InlineKeyboardButton('Отправить на почту', callback_data='cb_send_email'))
@@ -246,17 +265,21 @@ def get_bcode_send(message):
             bot.send_message(message.chat.id, 'Товар в скором времени будет добавлен к вам на кассу\n\n'
                                               'Касса обязательно должна быть <u><b>включена</b></u> и должен быть <u><b>интернет</b></u>',
                              reply_markup=start_markup(), parse_mode='html')
-            with open('/linuxcash/net/server/server/telegram_barcode.txt', 'a') as barcodes_file: # Инфа для скрипта, который будет добавлять на компы штрихкода
+            with open(f'{config.server_path}telegram_barcode.txt',
+                      'a') as barcodes_file:  # Инфа для скрипта, который будет добавлять на компы штрихкода
                 barcodes_file.write(
                     'cash-' + cashInfo.bcode_cash_number + "|" + cashInfo.bcode + '|' + cashInfo.bcode_otdel + '|' + cashInfo.bcode_name + '\n')
                 logger.info(
                     'Добавил: cash-' + cashInfo.bcode_cash_number + "|" + cashInfo.bcode + '|' + cashInfo.bcode_otdel + '|' + cashInfo.bcode_name + '\n')
         else:
-            logger.debug("Название товара не прошла проверку " + message.text + " - " + len(message.text))
+            logger.debug(
+                f"Штрихкод неверен {message.text} - длина штрихкода({len(message.text)}) --- {cashInfo.bcode_cash_number}")
             bot.send_message(message.chat.id, 'Название товара введено не верно. Максимальная длина 35 символов',
                              reply_markup=start_markup())
     except Exception as ex:
-        logger.error(ex)
+        bot.send_message(message.chat.id, 'Внутрення ошибка, попробуйте снова',
+                         reply_markup=start_markup())
+        logger.error(f'{ex} --- {cashInfo.bcode_cash_number}')
 
 
 bot.polling()

@@ -37,9 +37,9 @@ import config, cashInfo
 
 def get_last_file(cash):
     cash = 'cash-' + cash
-    cash_info = [line.split() for line in open('/linuxcash/net/server/server/info.txt', 'r')
+    cash_info = [line.split() for line in open(f'{config.server_path}info.txt', 'r')
                  if re.search(cash, line)]
-    path = '/linuxcash/net/server/server/ostatki/' + cash_info[0][1] + '/' + cash_info[0][2] + '/xls'
+    path = f'{config.server_path}ostatki/' + cash_info[0][1] + '/' + cash_info[0][2] + '/xls'
     files = os.listdir(path)
     files = [os.path.join(path, file) for file in files]
     files = [file for file in files if os.path.isfile(file)]
@@ -48,9 +48,9 @@ def get_last_file(cash):
 
 def get_last_files(cash, amount):
     cash = 'cash-' + cash
-    cash_info = [line.split() for line in open('/linuxcash/net/server/server/info.txt', 'r') if
+    cash_info = [line.split() for line in open(f'{config.server_path}info.txt', 'r') if
                  re.search(cash, line)]
-    cash_path = '/linuxcash/net/server/server/ostatki/' + cash_info[0][1] + "/" + cash_info[0][2] + '/xls'
+    cash_path = f'{config.server_path}ostatki/' + cash_info[0][1] + "/" + cash_info[0][2] + '/xls'
     files = os.listdir(cash_path)
     files = [os.path.join(cash_path, file) for file in files]
     files = [file for file in files if os.path.isfile(file)]
