@@ -194,10 +194,10 @@ def gen_bcode_start(message):
             markup.add(alcohol, beer, cigarettes, other)
 
             msg = bot.send_message(message.chat.id, 'Выберите какой товар хотите добавить:\n\n'
-                                                    '<b>Крепкий алкоголь</b> - всё что имеет акцизную марку\n\n'
-                                                    '<b>Пиво</b> - любой вид пива\n\n'
-                                                    '<b>Сигареты</b> - любой вид сигарет>\n\n'
-                                                    '<b>Прочее</b> - товары которые продаются как правило через ИП. Например: мыло, треугольник, хлеб',
+                                                    '<u><b>Крепкий алкоголь</b></u> - всё что имеет акцизную марку\n\n'
+                                                    '<u><b>Пиво</b></u> - любой вид пива\n\n'
+                                                    '<u><b>Сигареты</b></u> - любой вид сигарет>\n\n'
+                                                    '<u><b>Прочее</b></u> - товары которые продаются как правило через ИП. Например: мыло, треугольник, хлеб',
                                    reply_markup=markup, parse_mode='html')
             bot.register_next_step_handler(msg, get_bcode_otdel)
         else:
@@ -213,15 +213,15 @@ def get_bcode_otdel(message):
     try:
         if message.text.lower() == 'крепкий алкоголь':
             cashInfo.bcode_otdel = '1'
-            bcode = bot.send_message(message.chat.id, 'Напишите штрихкод товара:')
+            bcode = bot.send_message(message.chat.id, 'Введите штрихкод товара:')
             bot.register_next_step_handler(bcode, set_barcode)
         elif message.text.lower() == 'пиво':
             cashInfo.bcode_otdel = '2'
-            bcode = bot.send_message(message.chat.id, 'Напишите штрихкод товара:')
+            bcode = bot.send_message(message.chat.id, 'Введите штрихкод товара:')
             bot.register_next_step_handler(bcode, set_barcode)
         elif message.text.lower() == 'сигареты':
             cashInfo.bcode_otdel = '3'
-            bcode = bot.send_message(message.chat.id, 'Напишите штрихкод товара:')
+            bcode = bot.send_message(message.chat.id, 'Введите штрихкод товара:')
             bot.register_next_step_handler(bcode, set_barcode)
         elif message.text.lower() == 'прочее':
             cashInfo.bcode_otdel = '4'
