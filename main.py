@@ -37,8 +37,8 @@ def catalog(message):
         button_listOstatki = types.KeyboardButton("Список по датам")
         markup.add(button_lastOstatki, button_listOstatki)
         bot.send_message(message.chat.id,
-                         '<u><b>Последние остатки</u></b> - Получить последние сгенерированные остатки\n\n'
-                         '<u><b>Список по датам</u></b> - Выведем даты последних 6 сгенерированных накладных',
+                         '<u><b>Последние остатки</b></u> - Получить последние сгенерированные остатки\n\n'
+                         '<u><b>Список по датам</b></u> - Выведем даты последних 6 сгенерированных накладных',
                          reply_markup=markup, parse_mode='html')
 
     elif message.text.lower() == "последние остатки":
