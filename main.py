@@ -14,7 +14,7 @@ import cashInfo
 bot = telebot.TeleBot(config.token)
 logger.add(config.dir_path + 'logs/debug.log',
            level='DEBUG', rotation='10 MB', compression='zip')
-
+logger.info("Начал работу")
 
 @bot.message_handler(commands=['start'])
 def start(message):
