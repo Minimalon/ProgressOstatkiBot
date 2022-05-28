@@ -226,6 +226,9 @@ def get_bcode_otdel(message):
         elif message.text.lower() == 'прочее':
             cashInfo.bcode_otdel = '4'
             cashInfo.bcode = functions.get_valid_barcode(cashInfo.bcode_cash_number)
+
+            msg = bot.send_message(message.chat.id, "Введите короткое название товара:")
+            bot.register_next_step_handler(msg, get_bcode_send)
         else:
             bot.send_message(message.chat.id, "Не понимаю данной команды")
 
