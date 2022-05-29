@@ -95,15 +95,16 @@ def send_email(email, path):
         pass
 
 
-def get_valid_barcode(barcode):
-    barcode = barcode.split('-')[0]
-    if len(barcode) == 1:
+def get_valid_barcode(pcNumber):
+    barcode = pcNumber.split('-')[0]
+    pcNumber = pcNumber.split('-')[0]
+    if len(pcNumber) == 1:
         barcode += "000000"
-    if len(barcode) == 2:
+    if len(pcNumber) == 2:
         barcode += "00000"
-    if len(barcode) == 3:
+    if len(pcNumber) == 3:
         barcode += "0000"
-    if len(barcode) == 4:
+    if len(pcNumber) == 4:
         barcode += "000"
     count_busy_barcode = [barcode for line in open(config.dir_path + 'logs/busy_barcode.txt', 'r') if re.search(barcode, line)]
     with open(config.dir_path + 'logs/busy_barcode.txt', 'a') as file:
