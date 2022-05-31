@@ -99,26 +99,18 @@ def start_markup():
 
 def send_last_file(message):
     try:
-        message = functions.check_repeat_cash(message.text)
-
-        regex = re.compile(r'[0-9]{1,4}-[0-9]{1,2}')
-        if re.fullmatch(regex, message.text):
-            markup = types.InlineKeyboardMarkup()
-            markup.add(types.InlineKeyboardButton('Отправить на почту', callback_data='cb_send_email'))
-            cashInfo.cash_number = message.text
-            xlsx = open(functions.get_last_file(message.text), 'rb')
-
-            # Инфа для глобальной переменной
-            cashInfo.current_path_file = functions.get_last_file(message.text)
-            logger.info(
-                f'Отправил последние остатки "{functions.get_last_file(message.text)}" --- {cashInfo.cash_number}')
-            bot.send_document(message.chat.id, xlsx, reply_markup=markup)
-            bot.send_message(message.chat.id, 'Нам очень приятно что пользуетесь нашим ботом\n\n'
-                                              'Оставьте пожалуйста отзыв <u>https://forms.gle/CbUD1SLiNnWcYwz28</u> ',
-                             reply_markup=start_markup(), parse_mode='html')
-        else:
-            logger.debug("Номер кассы введена не правильно - " + message.text)
-            bot.send_message(message.chat.id, 'Номер кассы введена не правильно', reply_markup=start_markup())
+        functions.check_repeat_cash(message.text)
+        markup = types.InlineKeyboardMarkup()
+        markup.add(types.InlineKeyboardButton('Отправить на почту', callback_data='cb_send_email'))
+        cashInfo.cash_number = message.text
+        xlsx = open(functions.get_last_file(cashInfo.cash_number), 'rb')
+        cashInfo.current_path_file = functions.get_last_file(cashInfo.cash_number)
+        logger.info(
+            f'Отправил последние остатки "{functions.get_last_file(cashInfo.cash_number)}" --- {cashInfo.cash_number}')
+        bot.send_document(message.chat.id, xlsx, reply_markup=markup)
+        bot.send_message(message.chat.id, 'Нам очень приятно что пользуетесь нашим ботом\n\n'
+                                          'Оставьте пожалуйста отзыв <u>https://forms.gle/CbUD1SLiNnWcYwz28</u> ',
+                         reply_markup=start_markup(), parse_mode='html')
     except Exception as ex:
         bot.send_message(message.chat.id, 'Внутрення ошибка, попробуйте снова',
                          reply_markup=start_markup())
