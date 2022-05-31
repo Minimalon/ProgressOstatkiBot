@@ -52,7 +52,6 @@ def check_repeat_cash(cash):
 
 
 def get_last_file(cash):
-    cash = 'cash-' + cash
     cash_info = [line.split() for line in open(f'{config.server_path}info.txt', 'r')
                  if re.search(cash, line)]
     path = f'{config.server_path}ostatki/' + cash_info[0][1] + '/' + cash_info[0][2] + '/xls'
@@ -63,7 +62,6 @@ def get_last_file(cash):
 
 
 def get_last_files(cash, amount):
-    cash = 'cash-' + cash
     cash_info = [line.split() for line in open(f'{config.server_path}info.txt', 'r') if
                  re.search(cash, line)]
     cash_path = f'{config.server_path}ostatki/' + cash_info[0][1] + "/" + cash_info[0][2] + '/xls'

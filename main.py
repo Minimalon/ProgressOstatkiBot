@@ -47,30 +47,19 @@ def catalog(message):
     elif message.text.lower() == "последние остатки":
         logger.info("Кнопка 'последние остатки'")
 
-        msg = bot.send_message(message.chat.id,
-                               "Введите номер компьютера:",
-                               parse_mode="html")
-
+        msg = bot.send_message(message.chat.id, "Введите номер компьютера:", parse_mode="html")
         bot.register_next_step_handler(msg, send_last_file)
 
     elif message.text.lower() == "список по датам":
         logger.info("Кнопка 'список по датам'")
 
-        msg = bot.send_message(message.chat.id,
-                               "Пример: <u><b>1798-1</b></u>\n"
-                               "Где 1798 - это номер компьютера, а 1 - это номер кассы\n\n"
-                               "Введите номер компьютера и номер кассы через дефиз:",
-                               parse_mode="html")
+        msg = bot.send_message(message.chat.id, "Введите номер компьютера:", parse_mode="html")
         bot.register_next_step_handler(msg, send_dates_files)
 
     elif message.text.lower() == "добавить штрихкод":
         logger.info("Кнопка 'добавить штрихкод'")
 
-        msg = bot.send_message(message.chat.id,
-                               "Пример: <u><b>1798-1</b></u>\n"
-                               "Где 1798 - это номер компьютера, а 1 - это номер кассы\n\n"
-                               "Введите номер компьютера и номер кассы через дефиз:",
-                               parse_mode="html")
+        msg = bot.send_message(message.chat.id, "Введите номер компьютера:", parse_mode="html")
         bot.register_next_step_handler(msg, gen_bcode_start)
     else:
         logger.debug("Не понимаю данной команды - " + message.text)
@@ -99,18 +88,22 @@ def start_markup():
 
 def send_last_file(message):
     try:
-        functions.check_repeat_cash(message.text)
-        markup = types.InlineKeyboardMarkup()
-        markup.add(types.InlineKeyboardButton('Отправить на почту', callback_data='cb_send_email'))
-        cashInfo.cash_number = message.text
-        xlsx = open(functions.get_last_file(cashInfo.cash_number), 'rb')
-        cashInfo.current_path_file = functions.get_last_file(cashInfo.cash_number)
-        logger.info(
-            f'Отправил последние остатки "{functions.get_last_file(cashInfo.cash_number)}" --- {cashInfo.cash_number}')
-        bot.send_document(message.chat.id, xlsx, reply_markup=markup)
-        bot.send_message(message.chat.id, 'Нам очень приятно что пользуетесь нашим ботом\n\n'
-                                          'Оставьте пожалуйста отзыв <u>https://forms.gle/CbUD1SLiNnWcYwz28</u> ',
-                         reply_markup=start_markup(), parse_mode='html')
+        regex = re.compile(r'[0-9]{1,4}')
+        if re.fullmatch(regex, message.text):
+            functions.check_repeat_cash(message.text)
+            markup = types.InlineKeyboardMarkup()
+            markup.add(types.InlineKeyboardButton('Отправить на почту', callback_data='cb_send_email'))
+            xlsx = open(functions.get_last_file(cashInfo.cash_number), 'rb')
+            cashInfo.current_path_file = functions.get_last_file(cashInfo.cash_number)
+            logger.info(
+                f'Отправил последние остатки "{functions.get_last_file(cashInfo.cash_number)}" --- {cashInfo.cash_number}')
+            bot.send_document(message.chat.id, xlsx, reply_markup=markup)
+            bot.send_message(message.chat.id, 'Нам очень приятно что пользуетесь нашим ботом\n\n'
+                                              'Оставьте пожалуйста отзыв <u>https://forms.gle/CbUD1SLiNnWcYwz28</u> ',
+                             reply_markup=start_markup(), parse_mode='html')
+        else:
+            logger.debug("Номер компьютера введен не правильно - " + message.text)
+            bot.send_message(message.chat.id, 'Номер кассы введена не правильно', reply_markup=start_markup())
     except Exception as ex:
         bot.send_message(message.chat.id, 'Внутрення ошибка, попробуйте снова',
                          reply_markup=start_markup())
@@ -119,9 +112,10 @@ def send_last_file(message):
 
 def send_dates_files(message):
     try:
-        regex = re.compile(r'[0-9]{1,4}-[0-9]{1,2}')
+        regex = re.compile(r'[0-9]{1,4}')
         if re.fullmatch(regex, message.text):
-            cash_files = functions.get_last_files(message.text, 6)
+            functions.check_repeat_cash(message.text)
+            cash_files = functions.get_last_files(cashInfo.cash_number, 6)
             markup = types.ReplyKeyboardMarkup(row_width=3)
             cash_dates = [line.split("/")[-1] for line in cash_files]  # Берём только название файла
             # cash_dates = [line.split("/")[-1] for line in cash_files]  # Берём только даты
@@ -134,7 +128,6 @@ def send_dates_files(message):
                 markup.add(i)
 
             # Инфа для глобальных переменных
-            cashInfo.cash_number = message.text
             cashInfo.path_to_files = cash_files
             cashInfo.dates_files = cash_dates
 
@@ -152,7 +145,7 @@ def send_dates_files(message):
 def send_file(message):
     try:
         markup = types.InlineKeyboardMarkup()
-        markup.add(types.InlineKeyboardButton('Отправить на потку', callback_data='cb_send_email'))
+        markup.add(types.InlineKeyboardButton('Отправить на почту', callback_data='cb_send_email'))
         path = cashInfo.path_to_files[cashInfo.dates_files.index(message.text)]
 
         # Инфа для глобальной переменной
@@ -189,9 +182,10 @@ def send_email(message):
 
 def gen_bcode_start(message):
     try:
-        regex = re.compile(r'[0-9]{1,4}-[0-9]{1,2}')
+        regex = re.compile(r'[0-9]{1,4}')
         if re.fullmatch(regex, message.text):
-            cashInfo.bcode_cash_number = message.text
+            cash_number = functions.check_repeat_cash(message.text).split('-')
+            cashInfo.bcode_cash_number = f'{cash_number[1]}-{cash_number[2]}'
             markup = types.ReplyKeyboardMarkup()
             alcohol = types.KeyboardButton('Крепкий алкоголь')
             beer = types.KeyboardButton('Пиво')
