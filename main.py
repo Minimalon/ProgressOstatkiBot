@@ -18,6 +18,7 @@ logger.info("Начал работу")
 
 @bot.message_handler(commands=['start'])
 def start(message):
+    logger.info(f"Зашел {message.from_user.first_name}")
     bot.send_message(message.chat.id,
                      "Здравствуйте <b>" + message.from_user.first_name + "</b>\n"
                                                                          "Чтобы получить остатки нажмите на кнопку <u><b>Получить остатки</b></u>\n\n"
