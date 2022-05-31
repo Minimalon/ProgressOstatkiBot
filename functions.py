@@ -35,6 +35,17 @@ import config, cashInfo
 #     files.reverse()
 #     return [ files[el] for el in range(amount) ]
 
+def check_repeat_cash(cash):
+    if cash == '1455':
+        return ['cash-1455-1']
+    count_cash = [line for line in open(config.server_path + 'info.txt', 'r') if re.search(f'cash-{cash}-', line)]
+    if len(count_cash) == 1:
+        cashInfo.cash_number = count_cash[0].split()[0]
+        return cashInfo.cash_number
+    else:
+        return None
+
+
 def get_last_file(cash):
     cash = 'cash-' + cash
     cash_info = [line.split() for line in open(f'{config.server_path}info.txt', 'r')
@@ -105,7 +116,8 @@ def get_valid_barcode(pcNumber):  # Приходит номер компа. Пр
         barcode += "0000"
     if len(pcNumber) == 4:
         barcode += "000"
-    count_busy_barcode = [barcode for line in open(config.dir_path + 'logs/busy_barcode.txt', 'r') if re.search(barcode, line)] # Количество до этого сгенерированных штрихкодов
+    count_busy_barcode = [barcode for line in open(config.dir_path + 'logs/busy_barcode.txt', 'r') if
+                          re.search(barcode, line)]  # Количество до этого сгенерированных штрихкодов
     with open(config.dir_path + 'logs/busy_barcode.txt', 'a') as file:
         barcode = barcode + str(len(count_busy_barcode))
         file.write(str(barcode) + '\n')

@@ -16,6 +16,7 @@ logger.add(config.dir_path + 'logs/debug.log',
            level='DEBUG', rotation='10 MB', compression='zip')
 logger.info("Начал работу")
 
+
 @bot.message_handler(commands=['start'])
 def start(message):
     logger.info(f"Зашел {message.from_user.first_name}")
@@ -33,7 +34,7 @@ def start(message):
 @logger.catch
 def catalog(message):
     if message.text.lower() == 'получить остатки':
-        logger.info("Кнопка - получить остатки")
+        logger.info("Кнопка 'получить остатки'")
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
         button_lastOstatki = types.KeyboardButton("Последние остатки")
         button_listOstatki = types.KeyboardButton("Список по датам")
@@ -44,17 +45,16 @@ def catalog(message):
                          reply_markup=markup, parse_mode='html')
 
     elif message.text.lower() == "последние остатки":
-        logger.info("Кнопка - последние остатки")
+        logger.info("Кнопка 'последние остатки'")
 
         msg = bot.send_message(message.chat.id,
-                               "Пример: <u><b>1798-1</b></u>\n"
-                               "Где 1798 - это номер компьютера, а 1 - это номер кассы\n\n"
-                               "Введите номер компьютера и номер кассы через дефиз:",
+                               "Введите номер компьютера:",
                                parse_mode="html")
+
         bot.register_next_step_handler(msg, send_last_file)
 
     elif message.text.lower() == "список по датам":
-        logger.info("Кнопка - список по датам")
+        logger.info("Кнопка 'список по датам'")
 
         msg = bot.send_message(message.chat.id,
                                "Пример: <u><b>1798-1</b></u>\n"
@@ -64,7 +64,7 @@ def catalog(message):
         bot.register_next_step_handler(msg, send_dates_files)
 
     elif message.text.lower() == "добавить штрихкод":
-        logger.info("Кнопка - добавить штрихкод")
+        logger.info("Кнопка 'добавить штрихкод'")
 
         msg = bot.send_message(message.chat.id,
                                "Пример: <u><b>1798-1</b></u>\n"
@@ -99,6 +99,8 @@ def start_markup():
 
 def send_last_file(message):
     try:
+        message = functions.check_repeat_cash(message.text)
+
         regex = re.compile(r'[0-9]{1,4}-[0-9]{1,2}')
         if re.fullmatch(regex, message.text):
             markup = types.InlineKeyboardMarkup()
@@ -108,7 +110,8 @@ def send_last_file(message):
 
             # Инфа для глобальной переменной
             cashInfo.current_path_file = functions.get_last_file(message.text)
-            logger.info(f'Отправил последние остатки "{functions.get_last_file(message.text)}" --- {cashInfo.cash_number}')
+            logger.info(
+                f'Отправил последние остатки "{functions.get_last_file(message.text)}" --- {cashInfo.cash_number}')
             bot.send_document(message.chat.id, xlsx, reply_markup=markup)
             bot.send_message(message.chat.id, 'Нам очень приятно что пользуетесь нашим ботом\n\n'
                                               'Оставьте пожалуйста отзыв <u>https://forms.gle/CbUD1SLiNnWcYwz28</u> ',
@@ -181,7 +184,8 @@ def send_email(message):
             functions.send_email(message.text, cashInfo.current_path_file)
             logger.info(f'Отправил {cashInfo.current_path_file} на почту {message.text} --- {cashInfo.cash_number}')
             bot.send_message(message.chat.id, 'Сообщение отправлено на почту\n\n'
-                                              'Если сообщение не приходит, то оно возможно у вас в <b><u>спаме</u></b>', reply_markup=start_markup(), parse_mode='html')
+                                              'Если сообщение не приходит, то оно возможно у вас в <b><u>спаме</u></b>',
+                             reply_markup=start_markup(), parse_mode='html')
         else:
             logger.debug("Электронная почта введена не правильно - " + message.text + ' | cash-' + cashInfo.cash_number)
             bot.send_message(message.chat.id, 'Электронная почта введена не правильно', reply_markup=start_markup())
