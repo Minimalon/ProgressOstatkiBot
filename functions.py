@@ -69,7 +69,6 @@ def send_email(email, path):
     try:
         server.login(sender, password)
         msg = MIMEMultipart()
-        msg["Subject"] = "OSTATKI"
         msg["From"] = sender
         msg["To"] = email
         msg['Date'] = formatdate(localtime=True)
@@ -95,18 +94,18 @@ def send_email(email, path):
         pass
 
 
-def get_valid_barcode(pcNumber):
-    barcode = pcNumber.split('-')[0]
-    pcNumber = pcNumber.split('-')[0]
-    if len(pcNumber) == 1:
-        barcode += "000000"
+def get_valid_barcode(pcNumber):  # Приходит номер компа. Приходят с дефизом. Например "1798-1".
+    barcode = pcNumber.split('-')[0]  # Берем только до дефиза,то есть только номер компьютера. С 1798-1 станет 1798
+    pcNumber = pcNumber.split('-')[0]  # Берем только до дефиза,то есть только номер компьютера. С 1798-1 станет 1798
+    if len(pcNumber) == 1:  # количество символов в номере компьютера. Например в "1798" 4 символа.
+        barcode += "000000"  # Прибавляем нули к штрихкоду
     if len(pcNumber) == 2:
         barcode += "00000"
     if len(pcNumber) == 3:
         barcode += "0000"
     if len(pcNumber) == 4:
         barcode += "000"
-    count_busy_barcode = [barcode for line in open(config.dir_path + 'logs/busy_barcode.txt', 'r') if re.search(barcode, line)]
+    count_busy_barcode = [barcode for line in open(config.dir_path + 'logs/busy_barcode.txt', 'r') if re.search(barcode, line)] # Количество до этого сгенерированных штрихкодов
     with open(config.dir_path + 'logs/busy_barcode.txt', 'a') as file:
         barcode = barcode + str(len(count_busy_barcode))
         file.write(str(barcode) + '\n')
