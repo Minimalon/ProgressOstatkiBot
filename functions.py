@@ -75,7 +75,7 @@ def send_email(email, path):
         ftype, encoding = mimetypes.guess_type(path)
         file_type, subtype = ftype.split('/')
         if file_type == 'image':
-            msg["Subject"] = "Barcode"
+            msg["Subject"] = "Barcodes"
             with open(path, 'rb') as f:
                 file = MIMEImage(f.read(), subtype)
         else:
