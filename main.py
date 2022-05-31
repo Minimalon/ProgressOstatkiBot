@@ -173,7 +173,7 @@ def send_email(message):
             functions.send_email(message.text, cashInfo.current_path_file)
             logger.info(f'Отправил {cashInfo.current_path_file} на почту {message.text} --- {cashInfo.cash_number}')
             bot.send_message(message.chat.id, 'Сообщение отправлено на почту\n\n'
-                                              'Если сообщение не приходит, то оно возможно у вас в <b><u>спаме</u></b>', reply_markup=start_markup())
+                                              'Если сообщение не приходит, то оно возможно у вас в <b><u>спаме</u></b>', reply_markup=start_markup(), parse_mode='html')
         else:
             logger.debug("Электронная почта введена не правильно - " + message.text + ' | cash-' + cashInfo.cash_number)
             bot.send_message(message.chat.id, 'Электронная почта введена не правильно', reply_markup=start_markup())
