@@ -171,6 +171,7 @@ def send_email(message):
 
         if re.fullmatch(regex, message.text):
             functions.send_email(message.text, cashInfo.current_path_file)
+            logger.info(f'Отправил {cashInfo.current_path_file} на почту {message.text}')
             bot.send_message(message.chat.id, 'Сообщение отправлено на почту', reply_markup=start_markup())
         else:
             logger.debug("Электронная почта введена не правильно - " + message.text + ' | cash-' + cashInfo.cash_number)
