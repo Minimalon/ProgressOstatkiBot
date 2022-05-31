@@ -43,7 +43,7 @@ def check_repeat_cash(cash):
     if cash == '1455':
         return ['cash-1455-1']
     count_cash = [line.split()[0] for line in open(config.server_path + 'info.txt', 'r') if re.search(f'cash-{cash}-', line)]
-    logger.info(count_cash)
+    logger.info(count_cash, len(count_cash))
     if len(count_cash) == 1:
         cashInfo.cash_number = count_cash
         return cashInfo.cash_number
