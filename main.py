@@ -121,11 +121,13 @@ def send_dates_files(message):
             markup = types.ReplyKeyboardMarkup(row_width=3)
             cash_dates = [line.split("/")[-1] for line in cash_files]  # Берём только название файла
             # cash_dates = [line.split("/")[-1] for line in cash_files]  # Берём только даты
-            cash_times = [":".join(line.split("_")[4:6]).split('.')[0] for line in cash_dates]  # Берём только даты из названия файла
+            cash_times = [":".join(line.split("_")[4:6]).split('.')[0] for line in
+                          cash_dates]  # Берём только даты из названия файла
             cash_dates = [line.split("_")[0:3] for line in cash_dates]  # Берём только даты из названия файла
             for line in cash_dates:
                 line.reverse()  # Переворачиваем чтобы даты были день-месяц-год
-            cash_dates = ['-'.join(line) + cash_times[count] for count, line in enumerate(cash_dates)]  # Соединяем даты
+            cash_dates = ['-'.join(line) + " " + cash_times[count] for count, line in
+                          enumerate(cash_dates)]  # Соединяем даты
             logger.info(cash_dates)
             buttons = [types.KeyboardButton(line) for line in cash_dates]
             for i in buttons:
