@@ -76,7 +76,7 @@ def callback_query(call):
             bot.send_message(call.message.chat.id, 'Внутрення ошибка, попробуйте снова',
                              reply_markup=start_markup())
             logger.error(f'{ex} --- {cashInfo.cash_number}')
-    elif call.data == 'cb_click_form':
+    if call.data == 'cb_click_form':
         logger.info(f"Кнопка 'Оставить отзыв'")
 
 
@@ -115,10 +115,12 @@ def send_last_file(message):
             logger.info(
                 f'Отправил последние остатки "{functions.get_last_file(cashInfo.cash_number)}" --- {cashInfo.cash_number}')
             bot.send_document(message.chat.id, xlsx, reply_markup=markup)
-            bot.send_message(message.chat.id, 'Нам очень приятно что пользуетесь нашим ботом', reply_markup=start_markup(), parse_mode='html')
+            bot.send_message(message.chat.id, 'Нам очень приятно что пользуетесь нашим ботом',
+                             reply_markup=start_markup(), parse_mode='html')
 
             markup = types.InlineKeyboardMarkup()
-            markup.add(types.InlineKeyboardButton('Оставить отзыв', url='https://forms.gle/CbUD1SLiNnWcYwz28',callback_data='cb_click_form'))
+            markup.add(types.InlineKeyboardButton('Оставить отзыв', url='https://forms.gle/CbUD1SLiNnWcYwz28',
+                                                  callback_data='cb_click_form'))
             bot.send_message(message.chat.id, 'Оставьте пожалуйста отзыв', reply_markup=markup, parse_mode='html')
         else:
             logger.debug("Номер компьютера введен не правильно - " + message.text)
