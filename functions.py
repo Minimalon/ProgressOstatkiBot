@@ -49,7 +49,7 @@ def check_repeat_cash(cash):
         cashInfo.cash_number = count_cash[0]
         return cashInfo.cash_number
     else:
-        cashInfo.cash_number = ''
+        cashInfo.cash_number = '--'
         return cashInfo.cash_number
 
 
