@@ -134,7 +134,7 @@ def send_last_file(message):
             cash_datesAndTimes = cash_dates + " " + cash_times
             bot.send_message(message.chat.id, f'Остатки <b><u>{cash_datesAndTimes}</u></b> числа\n\n'
                                               f'Чтобы получить более свежие остатки, обратитесь к нам в тех.поддержку',
-                             reply_markup=markup_WhatsApp)
+                             reply_markup=markup_WhatsApp, parse_mode="html")
 
             # Block Google Form
             markup_Form = types.InlineKeyboardMarkup()
