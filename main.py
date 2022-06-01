@@ -121,7 +121,7 @@ def send_dates_files(message):
             markup = types.ReplyKeyboardMarkup(row_width=3)
             cash_dates = [line.split("/")[-1] for line in cash_files]  # Берём только название файла
             # cash_dates = [line.split("/")[-1] for line in cash_files]  # Берём только даты
-            cash_dates = [line.split("_")[0:3] for line in cash_dates]  # Берём только даты из названия файла
+            cash_dates = [line.split("_")[0:3] + line.split("_")[-2] for line in cash_dates]  # Берём только даты из названия файла
             for line in cash_dates:
                 line.reverse()  # Переворачиваем чтобы даты были день-месяц-год
             cash_dates = ['-'.join(line) for line in cash_dates]  # Соединяем даты
