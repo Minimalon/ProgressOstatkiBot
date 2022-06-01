@@ -124,7 +124,7 @@ def send_last_file(message):
             markup_WhatsApp = types.InlineKeyboardMarkup()
             markup_WhatsApp.add(types.InlineKeyboardButton('Тех.Поддержка', url='https://wa.me/79600484366'))
             cash_dates = cashInfo.current_path_file.split('/')[-1]  # Берём только название файла
-            cash_times = ":".join(cash_dates.split("_")[4:6].split('.')[0])  # Берём только  время из названия файла
+            cash_times = ":".join(cash_dates.split("_")[4:6]).split(".")[0]  # Берём только  время из названия файла
             logger.info(cash_times)
             cash_dates = cash_dates.split("_")[0:3]
             cash_dates.reverse()
