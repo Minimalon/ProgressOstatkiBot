@@ -92,19 +92,23 @@ def check_valid_cash(message, cash):
     markup_WhatsApp = types.InlineKeyboardMarkup()
     markup_WhatsApp.add(types.InlineKeyboardButton('Тех.Поддержка', url='https://wa.me/79600484366'))
     if cash == '--':
-        logger.debug(f'Данной кассы не найдено {message.text}')
+        logger.debug(f'Данной кассы не найдено "{message.text}"')
 
         bot.send_message(message.chat.id, "Данной кассы не найдено \n\n"
-                                          "Обратитесь в тех. поддержку за остатками",
+                                          "Обратитесь в тех. поддержку",
                          parse_mode='html', reply_markup=markup_WhatsApp)
         return False
     elif cash == '---':
-        logger.debug(f'Нашлось больше одной кассы {message.text}')
+        logger.debug(f'Нашлось больше одной кассы "{message.text}"')
         bot.send_message(message.chat.id, "Нашлось больше одной кассы\n\n"
-                                          "Обратитесь в тех. поддержку за остатками",
+                                          "Обратитесь в тех. поддержку",
                          parse_mode='html', reply_markup=markup_WhatsApp)
         return False
 
+
+def bot_error_send(message):
+    bot.send_message(message.chat.id, 'Внутреняя ошибка, попробуйте снова',
+                     reply_markup=start_markup())
 
 def send_last_file(message):
     try:
@@ -149,8 +153,7 @@ def send_last_file(message):
             logger.debug("Номер компьютера введен не правильно - " + message.text)
             bot.send_message(message.chat.id, 'Номер кассы введена не правильно', reply_markup=start_markup())
     except Exception as ex:
-        bot.send_message(message.chat.id, 'Внутрення ошибка, попробуйте снова',
-                         reply_markup=start_markup())
+        bot_error_send(message)
         logger.error(f'{ex} --- {cashInfo.cash_number}')
 
 
@@ -187,8 +190,7 @@ def send_dates_files(message):
             logger.debug("Номер кассы введена не правильно - " + message.text)
             bot.send_message(message.chat.id, 'Номер кассы введена не правильно', reply_markup=start_markup())
     except Exception as ex:
-        bot.send_message(message.chat.id, 'Внутрення ошибка, попробуйте снова',
-                         reply_markup=start_markup())
+        bot_error_send(message)
         logger.error(f'{ex} --- {cashInfo.cash_number}')
 
 
@@ -218,8 +220,7 @@ def send_file(message):
         bot.send_message(message.chat.id, 'Спасибо пользуетесь нашим ботом',
                          reply_markup=start_markup(), parse_mode='html')
     except Exception as ex:
-        bot.send_message(message.chat.id, 'Внутрення ошибка, попробуйте снова',
-                         reply_markup=start_markup())
+        bot_error_send(message)
         logger.error(f'{ex} --- {cashInfo.cash_number}')
 
 
@@ -237,8 +238,7 @@ def send_email(message):
             logger.debug("Электронная почта введена не правильно - " + message.text + ' | cash-' + cashInfo.cash_number)
             bot.send_message(message.chat.id, 'Электронная почта введена не правильно', reply_markup=start_markup())
     except Exception as ex:
-        bot.send_message(message.chat.id, 'Внутрення ошибка, попробуйте снова',
-                         reply_markup=start_markup())
+        bot_error_send(message)
         logger.error(f'{ex} --- {cashInfo.cash_number} or {cashInfo.bcode_cash_number}')
 
 
@@ -271,8 +271,7 @@ def gen_bcode_start(message):
             logger.debug("Номер кассы введена не правильно - " + message.text)
             bot.send_message(message.chat.id, 'Номер кассы введена не правильно', reply_markup=start_markup())
     except Exception as ex:
-        bot.send_message(message.chat.id, 'Внутрення ошибка, попробуйте снова',
-                         reply_markup=start_markup())
+        bot_error_send(message)
         logger.error(f'{ex} --- {cashInfo.bcode_cash_number}')
 
 
@@ -300,8 +299,7 @@ def get_bcode_otdel(message):
 
 
     except Exception as ex:
-        bot.send_message(message.chat.id, 'Внутрення ошибка, попробуйте снова',
-                         reply_markup=start_markup())
+        bot_error_send(message)
         logger.error(f'{ex} --- {cashInfo.bcode_cash_number}')
 
 
@@ -346,8 +344,7 @@ def get_bcode_send(message):
             bot.send_message(message.chat.id, 'Название товара введено не верно. Максимальная длина 35 символов',
                              reply_markup=start_markup())
     except Exception as ex:
-        bot.send_message(message.chat.id, 'Внутрення ошибка, попробуйте снова',
-                         reply_markup=start_markup())
+        bot_error_send(message)
         logger.error(f'{ex} --- {cashInfo.bcode_cash_number}')
 
 
