@@ -90,6 +90,7 @@ def send_last_file(message):
     try:
         regex = re.compile(r'[0-9]{1,4}')
         if re.fullmatch(regex, message.text):
+            logger.info(f"Ввели номер компьютера '{message.text}'")
             functions.check_repeat_cash(message.text)
             logger.info(f'check_repeat_cash нашел "{cashInfo.cash_number}"')
             markup = types.InlineKeyboardMarkup()
@@ -115,6 +116,7 @@ def send_dates_files(message):
     try:
         regex = re.compile(r'[0-9]{1,4}')
         if re.fullmatch(regex, message.text):
+            logger.info(f"Ввели номер компьютера '{message.text}'")
             functions.check_repeat_cash(message.text)
             logger.info(f'check_repeat_cash нашел "{cashInfo.cash_number}"')
             cash_files = functions.get_last_files(cashInfo.cash_number, 6)
@@ -189,6 +191,7 @@ def gen_bcode_start(message):
     try:
         regex = re.compile(r'[0-9]{1,4}')
         if re.fullmatch(regex, message.text):
+            logger.info(f"Ввели номер компьютера '{message.text}'")
             cash_number = functions.check_repeat_cash(message.text).split('-')
             logger.info(f'check_repeat_cash нашел "cash-{cash_number[1]}-{cash_number[2]}"')
             cashInfo.bcode_cash_number = f'{cash_number[1]}-{cash_number[2]}'
