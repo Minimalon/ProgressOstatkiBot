@@ -142,7 +142,7 @@ def send_last_file(message):
             cash_dates.reverse()
             cash_dates = '-'.join(cash_dates)  # Берём только даты из названия файла
             cash_datesAndTimes = cash_dates + " " + cash_times
-            bot.send_message(message.chat.id, f'Остатки <b><u>{cash_datesAndTimes}</u></b> числа\n\n'
+            bot.send_message(message.chat.id, f'Остатки <b><u>{cash_datesAndTimes}</u></b>\n\n'
                                               f'Чтобы получить более свежие остатки, обратитесь к нам в тех.поддержку',
                              reply_markup=markup_WhatsApp(), parse_mode="html")
 
