@@ -88,6 +88,21 @@ def start_markup():
     return markup
 
 
+def check_valid_cash(message, cash):
+    if cash == '--':
+        logger.debug(f'Данной кассы не найдено {message.text}')
+        bot.send_message(message.chat.id, "Данной кассы не найдено \n\n"
+                                          "Обратитесь в тех. поддержку за остатками на WhatsApp по номеру <u>+7(960)048-43-66</u>",
+                         parse_mode='html', reply_markup=start_markup())
+        return False
+    elif cash == '---':
+        logger.debug(f'Нашлось больше одной кассы {message.text}')
+        bot.send_message(message.chat.id, "Нашлось больше одной кассы\n\n"
+                                          "Обратитесь в тех. поддержку за остатками на WhatsApp по номеру <u>+7(960)048-43-66</u>",
+                         parse_mode='html', reply_markup=start_markup())
+        return False
+
+
 def send_last_file(message):
     try:
         regex = re.compile(r'[0-9]{1,4}')
@@ -95,33 +110,36 @@ def send_last_file(message):
             logger.info(f"Ввели номер компьютера '{message.text}'")
             cash = functions.check_repeat_cash(message.text)
             logger.info(f'check_repeat_cash нашел "{cashInfo.cash_number}"')
-            if cash == '--':
-                logger.debug(f'Данной кассы не найдено {message.text}')
-                bot.send_message(message.chat.id, "Данной кассы не найдено \n\n"
-                                                  "Обратитесь в тех. поддержку за остатками на WhatsApp по номеру <u>+7(960)048-43-66</u>",
-                                 parse_mode='html', reply_markup=start_markup())
-                return False
-            elif cash == '---':
-                logger.debug(f'Нашлось больше одной кассы {message.text}')
-                bot.send_message(message.chat.id, "Нашлось больше одной кассы\n\n"
-                                                  "Обратитесь в тех. поддержку за остатками на WhatsApp по номеру <u>+7(960)048-43-66</u>",
-                                 parse_mode='html', reply_markup=start_markup())
-                return False
-
+            check_valid_cash(message, cash)
             markup = types.InlineKeyboardMarkup()
             markup.add(types.InlineKeyboardButton('Отправить на почту', callback_data='cb_send_email'))
             xlsx = open(functions.get_last_file(cashInfo.cash_number), 'rb')
             cashInfo.current_path_file = functions.get_last_file(cashInfo.cash_number)
+
             logger.info(
                 f'Отправил последние остатки "{functions.get_last_file(cashInfo.cash_number)}" --- {cashInfo.cash_number}')
             bot.send_document(message.chat.id, xlsx, reply_markup=markup)
+
+            # Block WhatsApp
+            markup_WhatsApp = types.InlineKeyboardMarkup()
+            markup_WhatsApp.add(types.InlineKeyboardButton('Тех.Поддержка', url='https://wa.me/79600484366'))
+            cash_dates = cashInfo.current_path_file.split('/')[-1]  # Берём только название файла
+            cash_times = ":".join(cash_dates.split("_")[4:6])  # Берём только  время из названия файла
+            cash_dates = '-'.join(cash_dates.split("_")[0:3].reverse())  # Берём только даты из названия файла
+            cash_datesAndTimes = cash_dates + " " + cash_times
+            bot.send_message(message.chat.id, f'Остатки <b><u>{cash_datesAndTimes}</u></b> числа\n\n'
+                                              f'Чтобы получить более свежие остатки, обратитесь к нам в тех.поддержку',
+                             reply_markup=markup_WhatsApp)
+
+            # Block Google Form
+            markup_Form = types.InlineKeyboardMarkup()
+            markup_Form.add(types.InlineKeyboardButton('Оставить отзыв', callback_data='cb_click_form',
+                                                  url='https://forms.gle/CbUD1SLiNnWcYwz28'))
+            bot.send_message(message.chat.id, 'Оставьте пожалуйста отзыв', reply_markup=markup_Form, parse_mode='html')
+
+            # Block continue
             bot.send_message(message.chat.id, 'Нам очень приятно что пользуетесь нашим ботом',
                              reply_markup=start_markup(), parse_mode='html')
-
-            markup = types.InlineKeyboardMarkup()
-            markup.add(types.InlineKeyboardButton('Оставить отзыв', callback_data='cb_click_form',
-                                                  url='https://forms.gle/CbUD1SLiNnWcYwz28'))
-            bot.send_message(message.chat.id, 'Оставьте пожалуйста отзыв', reply_markup=markup, parse_mode='html')
         else:
             logger.debug("Номер компьютера введен не правильно - " + message.text)
             bot.send_message(message.chat.id, 'Номер кассы введена не правильно', reply_markup=start_markup())
@@ -138,18 +156,7 @@ def send_dates_files(message):
             logger.info(f"Ввели номер компьютера '{message.text}'")
             cash = functions.check_repeat_cash(message.text)
             logger.info(f'check_repeat_cash нашел "{cashInfo.cash_number}"')
-            if cash == '--':
-                logger.debug(f'Данной кассы не найдено {message.text}')
-                bot.send_message(message.chat.id, "Данной кассы не найдено \n\n"
-                                                  "Обратитесь в тех. поддержку за остатками на WhatsApp по номеру <u>+7(960)048-43-66</u>",
-                                 parse_mode='html', reply_markup=start_markup())
-                return False
-            elif cash == '---':
-                logger.debug(f'Нашлось больше одной кассы {message.text}')
-                bot.send_message(message.chat.id, "Нашлось больше одной кассы\n\n"
-                                                  "Обратитесь в тех. поддержку за остатками на WhatsApp по номеру <u>+7(960)048-43-66</u>",
-                                 parse_mode='html', reply_markup=start_markup())
-                return False
+            check_valid_cash(message, cash)
             cash_files = functions.get_last_files(cashInfo.cash_number, 6)
             markup = types.ReplyKeyboardMarkup(row_width=3)
             cash_dates = [line.split("/")[-1] for line in cash_files]  # Берём только название файла
@@ -190,8 +197,20 @@ def send_file(message):
         cashInfo.current_path_file = path
         logger.info(f'Отправил остатки по выбранной дате "{path}" --- {cashInfo.cash_number}')
         bot.send_document(message.chat.id, open(path, 'rb'), reply_markup=markup)
-        bot.send_message(message.chat.id, 'Нам очень приятно что пользуетесь нашим ботом\n\n'
-                                          'Оставьте пожалуйста отзыв <u>https://forms.gle/CbUD1SLiNnWcYwz28</u> ',
+        # Block WhatsApp
+        markup_WhatsApp = types.InlineKeyboardMarkup()
+        markup_WhatsApp.add(types.InlineKeyboardButton('Тех.Поддержка', url='https://wa.me/79600484366'))
+        bot.send_message(message.chat.id, f'Чтобы получить более свежие остатки, обратитесь к нам в тех.поддержку',
+                         reply_markup=markup_WhatsApp)
+
+        # Block Google Form
+        markup_Form = types.InlineKeyboardMarkup()
+        markup_Form.add(types.InlineKeyboardButton('Оставить отзыв', callback_data='cb_click_form',
+                                                   url='https://forms.gle/CbUD1SLiNnWcYwz28'))
+        bot.send_message(message.chat.id, 'Оставьте пожалуйста отзыв', reply_markup=markup_Form, parse_mode='html')
+
+        # Block continue
+        bot.send_message(message.chat.id, 'Нам очень приятно что пользуетесь нашим ботом',
                          reply_markup=start_markup(), parse_mode='html')
     except Exception as ex:
         bot.send_message(message.chat.id, 'Внутрення ошибка, попробуйте снова',
@@ -223,21 +242,8 @@ def gen_bcode_start(message):
         regex = re.compile(r'[0-9]{1,4}')
         if re.fullmatch(regex, message.text):
             logger.info(f"Ввели номер компьютера '{message.text}'")
-
             cash = functions.check_repeat_cash(message.text)
-            if cash == '--':
-                logger.debug(f'Данной кассы не найдено {message.text}')
-                bot.send_message(message.chat.id, "Данной кассы не найдено \n\n"
-                                                  "Обратитесь в тех. поддержку за остатками на WhatsApp по номеру <u>+7(960)048-43-66</u>",
-                                 parse_mode='html', reply_markup=start_markup())
-                return False
-            elif cash == '---':
-                logger.debug(f'Нашлось больше одной кассы {message.text}')
-                bot.send_message(message.chat.id, "Нашлось больше одной кассы\n\n"
-                                                  "Обратитесь в тех. поддержку за остатками на WhatsApp по номеру <u>+7(960)048-43-66</u>",
-                                 parse_mode='html', reply_markup=start_markup())
-                return False
-
+            check_valid_cash(message, cash)
             cash_number = functions.check_repeat_cash(message.text).split('-')
             logger.info(f'check_repeat_cash нашел "cash-{cash_number[1]}-{cash_number[2]}"')
             cashInfo.bcode_cash_number = f'{cash_number[1]}-{cash_number[2]}'
