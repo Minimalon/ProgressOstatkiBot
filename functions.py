@@ -41,14 +41,16 @@ import config, cashInfo
 
 def check_repeat_cash(cash):
     if cash == '1455':
-        return ['cash-1455-1']
+        cashInfo.cash_number = 'cash-1455-1'
+        return cashInfo.cash_number
     count_cash = [line.split()[0] for line in open(config.server_path + 'info.txt', 'r') if re.search(f'cash-{cash}-', line)]
     # logger.info(count_cash[0])
     if len(count_cash) == 1:
         cashInfo.cash_number = count_cash[0]
         return cashInfo.cash_number
     else:
-        return None
+        cashInfo.cash_number = ''
+        return cashInfo.cash_number
 
 
 def get_last_file(cash):
