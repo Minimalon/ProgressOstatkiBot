@@ -91,8 +91,12 @@ def send_last_file(message):
         regex = re.compile(r'[0-9]{1,4}')
         if re.fullmatch(regex, message.text):
             logger.info(f"Ввели номер компьютера '{message.text}'")
-            functions.check_repeat_cash(message.text)
+            cash = functions.check_repeat_cash(message.text)
             logger.info(f'check_repeat_cash нашел "{cashInfo.cash_number}"')
+            if cash.split('-')[1] != message.text:
+                logger.debug(f'Номер компьютера не сходит "{cash, message.text}"')
+                bot.send_message(message.chat.id, "Произошла внутреняя ошибка.\n\n"
+                                                  "Обратитесь в тех. поддержку на WhatsApp по номеру <u>+7(960)048-43-66</u>", parse_mode='html')
             markup = types.InlineKeyboardMarkup()
             markup.add(types.InlineKeyboardButton('Отправить на почту', callback_data='cb_send_email'))
             xlsx = open(functions.get_last_file(cashInfo.cash_number), 'rb')
@@ -117,8 +121,12 @@ def send_dates_files(message):
         regex = re.compile(r'[0-9]{1,4}')
         if re.fullmatch(regex, message.text):
             logger.info(f"Ввели номер компьютера '{message.text}'")
-            functions.check_repeat_cash(message.text)
+            cash = functions.check_repeat_cash(message.text)
             logger.info(f'check_repeat_cash нашел "{cashInfo.cash_number}"')
+            if cash.split('-')[1] != message.text:
+                logger.debug(f'Номер компьютера не сходит "{cash, message.text}"')
+                bot.send_message(message.chat.id, "Произошла внутреняя ошибка.\n\n"
+                                                  "Обратитесь в тех. поддержку на WhatsApp по номеру <u>+7(960)048-43-66</u>", parse_mode='html')
             cash_files = functions.get_last_files(cashInfo.cash_number, 6)
             markup = types.ReplyKeyboardMarkup(row_width=3)
             cash_dates = [line.split("/")[-1] for line in cash_files]  # Берём только название файла
