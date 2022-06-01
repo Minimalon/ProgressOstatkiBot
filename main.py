@@ -94,13 +94,13 @@ def send_last_file(message):
             cash = functions.check_repeat_cash(message.text)
             logger.info(f'check_repeat_cash нашел "{cashInfo.cash_number}"')
             if cash == '--':
-                logger.debug(f'Данной кассы не найдено {cash, message.text}')
+                logger.debug(f'Данной кассы не найдено {message.text}')
                 bot.send_message(message.chat.id, "Данной кассы не найдено \n\n"
                                                   "Обратитесь в тех. поддержку за остатками на WhatsApp по номеру <u>+7(960)048-43-66</u>",
                                  parse_mode='html', reply_markup=start_markup())
                 return False
             elif cash == '---':
-                logger.debug(f'Нашлось больше одной кассы {cash, message.text}')
+                logger.debug(f'Нашлось больше одной кассы {message.text}')
                 bot.send_message(message.chat.id, "Нашлось больше одной кассы\n\n"
                                                   "Обратитесь в тех. поддержку за остатками на WhatsApp по номеру <u>+7(960)048-43-66</u>",
                                  parse_mode='html', reply_markup=start_markup())
@@ -133,13 +133,13 @@ def send_dates_files(message):
             cash = functions.check_repeat_cash(message.text)
             logger.info(f'check_repeat_cash нашел "{cashInfo.cash_number}"')
             if cash == '--':
-                logger.debug(f'Данной кассы не найдено {cash, message.text}')
+                logger.debug(f'Данной кассы не найдено {message.text}')
                 bot.send_message(message.chat.id, "Данной кассы не найдено \n\n"
                                                   "Обратитесь в тех. поддержку за остатками на WhatsApp по номеру <u>+7(960)048-43-66</u>",
                                  parse_mode='html', reply_markup=start_markup())
                 return False
             elif cash == '---':
-                logger.debug(f'Нашлось больше одной кассы {cash, message.text}')
+                logger.debug(f'Нашлось больше одной кассы {message.text}')
                 bot.send_message(message.chat.id, "Нашлось больше одной кассы\n\n"
                                                   "Обратитесь в тех. поддержку за остатками на WhatsApp по номеру <u>+7(960)048-43-66</u>",
                                  parse_mode='html', reply_markup=start_markup())
@@ -220,13 +220,13 @@ def gen_bcode_start(message):
 
             cash = functions.check_repeat_cash(message.text)
             if cash == '--':
-                logger.debug(f'Данной кассы не найдено {cash, message.text}')
+                logger.debug(f'Данной кассы не найдено {message.text}')
                 bot.send_message(message.chat.id, "Данной кассы не найдено \n\n"
                                                   "Обратитесь в тех. поддержку за остатками на WhatsApp по номеру <u>+7(960)048-43-66</u>",
                                  parse_mode='html', reply_markup=start_markup())
                 return False
             elif cash == '---':
-                logger.debug(f'Нашлось больше одной кассы {cash, message.text}')
+                logger.debug(f'Нашлось больше одной кассы {message.text}')
                 bot.send_message(message.chat.id, "Нашлось больше одной кассы\n\n"
                                                   "Обратитесь в тех. поддержку за остатками на WhatsApp по номеру <u>+7(960)048-43-66</u>",
                                  parse_mode='html', reply_markup=start_markup())
