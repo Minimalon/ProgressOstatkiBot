@@ -128,7 +128,6 @@ def send_dates_files(message):
                 line.reverse()  # Переворачиваем чтобы даты были день-месяц-год
             cash_dates = ['-'.join(line) + " " + cash_times[count] for count, line in
                           enumerate(cash_dates)]  # Соединяем даты
-            logger.info(cash_dates)
             buttons = [types.KeyboardButton(line) for line in cash_dates]
             for i in buttons:
                 markup.add(i)
