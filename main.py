@@ -93,10 +93,19 @@ def send_last_file(message):
             logger.info(f"Ввели номер компьютера '{message.text}'")
             cash = functions.check_repeat_cash(message.text)
             logger.info(f'check_repeat_cash нашел "{cashInfo.cash_number}"')
-            if cash.split('-')[1] != message.text:
-                logger.debug(f'Номер компьютера не сходит "{cash, message.text}"')
-                bot.send_message(message.chat.id, "Произошла внутреняя ошибка.\n\n"
-                                                  "Обратитесь в тех. поддержку на WhatsApp по номеру <u>+7(960)048-43-66</u>", parse_mode='html')
+            if cash == '--':
+                logger.debug(f'Данной кассы не найдено {cash, message.text}')
+                bot.send_message(message.chat.id, "Данной кассы не найдено \n\n"
+                                                  "Обратитесь в тех. поддержку за остатками на WhatsApp по номеру <u>+7(960)048-43-66</u>",
+                                 parse_mode='html', reply_markup=start_markup())
+                return False
+            elif cash == '---':
+                logger.debug(f'Нашлось больше одной кассы {cash, message.text}')
+                bot.send_message(message.chat.id, "Нашлось больше одной кассы\n\n"
+                                                  "Обратитесь в тех. поддержку за остатками на WhatsApp по номеру <u>+7(960)048-43-66</u>",
+                                 parse_mode='html', reply_markup=start_markup())
+                return False
+
             markup = types.InlineKeyboardMarkup()
             markup.add(types.InlineKeyboardButton('Отправить на почту', callback_data='cb_send_email'))
             xlsx = open(functions.get_last_file(cashInfo.cash_number), 'rb')
@@ -123,10 +132,18 @@ def send_dates_files(message):
             logger.info(f"Ввели номер компьютера '{message.text}'")
             cash = functions.check_repeat_cash(message.text)
             logger.info(f'check_repeat_cash нашел "{cashInfo.cash_number}"')
-            if cash.split('-')[1] != message.text:
-                logger.debug(f'Номер компьютера не сходит "{cash, message.text}"')
-                bot.send_message(message.chat.id, "Произошла внутреняя ошибка.\n\n"
-                                                  "Обратитесь в тех. поддержку на WhatsApp по номеру <u>+7(960)048-43-66</u>", parse_mode='html')
+            if cash == '--':
+                logger.debug(f'Данной кассы не найдено {cash, message.text}')
+                bot.send_message(message.chat.id, "Данной кассы не найдено \n\n"
+                                                  "Обратитесь в тех. поддержку за остатками на WhatsApp по номеру <u>+7(960)048-43-66</u>",
+                                 parse_mode='html', reply_markup=start_markup())
+                return False
+            elif cash == '---':
+                logger.debug(f'Нашлось больше одной кассы {cash, message.text}')
+                bot.send_message(message.chat.id, "Нашлось больше одной кассы\n\n"
+                                                  "Обратитесь в тех. поддержку за остатками на WhatsApp по номеру <u>+7(960)048-43-66</u>",
+                                 parse_mode='html', reply_markup=start_markup())
+                return False
             cash_files = functions.get_last_files(cashInfo.cash_number, 6)
             markup = types.ReplyKeyboardMarkup(row_width=3)
             cash_dates = [line.split("/")[-1] for line in cash_files]  # Берём только название файла
@@ -200,6 +217,21 @@ def gen_bcode_start(message):
         regex = re.compile(r'[0-9]{1,4}')
         if re.fullmatch(regex, message.text):
             logger.info(f"Ввели номер компьютера '{message.text}'")
+
+            cash = functions.check_repeat_cash(message.text)
+            if cash == '--':
+                logger.debug(f'Данной кассы не найдено {cash, message.text}')
+                bot.send_message(message.chat.id, "Данной кассы не найдено \n\n"
+                                                  "Обратитесь в тех. поддержку за остатками на WhatsApp по номеру <u>+7(960)048-43-66</u>",
+                                 parse_mode='html', reply_markup=start_markup())
+                return False
+            elif cash == '---':
+                logger.debug(f'Нашлось больше одной кассы {cash, message.text}')
+                bot.send_message(message.chat.id, "Нашлось больше одной кассы\n\n"
+                                                  "Обратитесь в тех. поддержку за остатками на WhatsApp по номеру <u>+7(960)048-43-66</u>",
+                                 parse_mode='html', reply_markup=start_markup())
+                return False
+
             cash_number = functions.check_repeat_cash(message.text).split('-')
             logger.info(f'check_repeat_cash нашел "cash-{cash_number[1]}-{cash_number[2]}"')
             cashInfo.bcode_cash_number = f'{cash_number[1]}-{cash_number[2]}'

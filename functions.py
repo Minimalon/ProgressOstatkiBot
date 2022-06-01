@@ -48,8 +48,11 @@ def check_repeat_cash(cash):
     if len(count_cash) == 1:
         cashInfo.cash_number = count_cash[0]
         return cashInfo.cash_number
-    else:
+    elif len(count_cash) == 0:
         cashInfo.cash_number = '--'
+        return cashInfo.cash_number
+    elif len(count_cash) > 1:
+        cashInfo.cash_number = '---'
         return cashInfo.cash_number
 
 
