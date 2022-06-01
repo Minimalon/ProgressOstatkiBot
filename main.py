@@ -78,6 +78,8 @@ def callback_query(call):
             logger.error(f'{ex} --- {cashInfo.cash_number}')
     if call.data == 'cb_click_form':
         logger.info("Кнопка 'Оставить отзыв'")
+    if call.data == 'cb_WhatsApp_markup':
+        logger.info("Кнопка 'Тех.Поддержка'")
 
 
 def start_markup():
@@ -88,27 +90,33 @@ def start_markup():
     return markup
 
 
-def check_valid_cash(message, cash):
+def markup_WhatsApp():
     markup_WhatsApp = types.InlineKeyboardMarkup()
-    markup_WhatsApp.add(types.InlineKeyboardButton('Тех.Поддержка', url='https://wa.me/79600484366'))
+    markup_WhatsApp.add(types.InlineKeyboardButton('Тех.Поддержка', url='https://wa.me/79600484366',
+                                                   callback_data='cb_WhatsApp_markup'))
+    return markup_WhatsApp
+
+
+def check_valid_cash(message, cash):
     if cash == '--':
         logger.debug(f'Данной кассы не найдено "{message.text}"')
 
         bot.send_message(message.chat.id, "Данной кассы не найдено \n\n"
                                           "Обратитесь в тех. поддержку",
-                         parse_mode='html', reply_markup=markup_WhatsApp)
+                         parse_mode='html', reply_markup=markup_WhatsApp())
         return False
     elif cash == '---':
         logger.debug(f'Нашлось больше одной кассы "{message.text}"')
         bot.send_message(message.chat.id, "Нашлось больше одной кассы\n\n"
                                           "Обратитесь в тех. поддержку",
-                         parse_mode='html', reply_markup=markup_WhatsApp)
+                         parse_mode='html', reply_markup=markup_WhatsApp())
         return False
 
 
 def bot_error_send(message):
     bot.send_message(message.chat.id, 'Внутреняя ошибка, попробуйте снова',
                      reply_markup=start_markup())
+
 
 def send_last_file(message):
     try:
@@ -128,8 +136,6 @@ def send_last_file(message):
             bot.send_document(message.chat.id, xlsx, reply_markup=markup)
 
             # Block WhatsApp
-            markup_WhatsApp = types.InlineKeyboardMarkup()
-            markup_WhatsApp.add(types.InlineKeyboardButton('Тех.Поддержка', url='https://wa.me/79600484366'))
             cash_dates = cashInfo.current_path_file.split('/')[-1]  # Берём только название файла
             cash_times = ":".join(cash_dates.split("_")[4:6]).split(".")[0]  # Берём только  время из названия файла
             cash_dates = cash_dates.split("_")[0:3]
@@ -138,16 +144,16 @@ def send_last_file(message):
             cash_datesAndTimes = cash_dates + " " + cash_times
             bot.send_message(message.chat.id, f'Остатки <b><u>{cash_datesAndTimes}</u></b> числа\n\n'
                                               f'Чтобы получить более свежие остатки, обратитесь к нам в тех.поддержку',
-                             reply_markup=markup_WhatsApp, parse_mode="html")
+                             reply_markup=markup_WhatsApp(), parse_mode="html")
 
             # Block Google Form
             markup_Form = types.InlineKeyboardMarkup()
             markup_Form.add(types.InlineKeyboardButton('Оставить отзыв', callback_data='cb_click_form',
-                                                  url='https://forms.gle/CbUD1SLiNnWcYwz28'))
+                                                       url='https://forms.gle/CbUD1SLiNnWcYwz28'))
             bot.send_message(message.chat.id, 'Оставьте пожалуйста отзыв', reply_markup=markup_Form, parse_mode='html')
 
             # Block continue
-            bot.send_message(message.chat.id, 'Спасибо пользуетесь нашим ботом',
+            bot.send_message(message.chat.id, 'Спасибо что пользуетесь нашим ботом',
                              reply_markup=start_markup(), parse_mode='html')
         else:
             logger.debug("Номер компьютера введен не правильно - " + message.text)
@@ -205,10 +211,8 @@ def send_file(message):
         logger.info(f'Отправил остатки по выбранной дате "{path}" --- {cashInfo.cash_number}')
         bot.send_document(message.chat.id, open(path, 'rb'), reply_markup=markup)
         # Block WhatsApp
-        markup_WhatsApp = types.InlineKeyboardMarkup()
-        markup_WhatsApp.add(types.InlineKeyboardButton('Тех.Поддержка', url='https://wa.me/79600484366'))
         bot.send_message(message.chat.id, f'Чтобы получить более свежие остатки, обратитесь к нам в тех.поддержку',
-                         reply_markup=markup_WhatsApp)
+                         reply_markup=markup_WhatsApp())
 
         # Block Google Form
         markup_Form = types.InlineKeyboardMarkup()
@@ -217,7 +221,7 @@ def send_file(message):
         bot.send_message(message.chat.id, 'Оставьте пожалуйста отзыв', reply_markup=markup_Form, parse_mode='html')
 
         # Block continue
-        bot.send_message(message.chat.id, 'Спасибо пользуетесь нашим ботом',
+        bot.send_message(message.chat.id, 'Спасибо что пользуетесь нашим ботом',
                          reply_markup=start_markup(), parse_mode='html')
     except Exception as ex:
         bot_error_send(message)
