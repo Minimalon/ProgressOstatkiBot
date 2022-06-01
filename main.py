@@ -77,7 +77,7 @@ def callback_query(call):
                              reply_markup=start_markup())
             logger.error(f'{ex} --- {cashInfo.cash_number}')
     if call.data == 'cb_click_form':
-        logger.info(f"Кнопка 'Оставить отзыв'")
+        logger.info("Кнопка 'Оставить отзыв'")
 
 
 def start_markup():
@@ -119,8 +119,8 @@ def send_last_file(message):
                              reply_markup=start_markup(), parse_mode='html')
 
             markup = types.InlineKeyboardMarkup()
-            markup.add(types.InlineKeyboardButton('Оставить отзыв', url='https://forms.gle/CbUD1SLiNnWcYwz28',
-                                                  callback_data='cb_click_form'))
+            markup.add(types.InlineKeyboardButton('Оставить отзыв', callback_data='cb_click_form',
+                                                  url='https://forms.gle/CbUD1SLiNnWcYwz28'))
             bot.send_message(message.chat.id, 'Оставьте пожалуйста отзыв', reply_markup=markup, parse_mode='html')
         else:
             logger.debug("Номер компьютера введен не правильно - " + message.text)
