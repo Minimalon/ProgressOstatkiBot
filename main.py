@@ -89,17 +89,20 @@ def start_markup():
 
 
 def check_valid_cash(message, cash):
+    markup_WhatsApp = types.InlineKeyboardMarkup()
+    markup_WhatsApp.add(types.InlineKeyboardButton('Тех.Поддержка', url='https://wa.me/79600484366'))
     if cash == '--':
         logger.debug(f'Данной кассы не найдено {message.text}')
+
         bot.send_message(message.chat.id, "Данной кассы не найдено \n\n"
-                                          "Обратитесь в тех. поддержку за остатками на WhatsApp по номеру <u>+7(960)048-43-66</u>",
-                         parse_mode='html', reply_markup=start_markup())
+                                          "Обратитесь в тех. поддержку за остатками",
+                         parse_mode='html', reply_markup=markup_WhatsApp)
         return False
     elif cash == '---':
         logger.debug(f'Нашлось больше одной кассы {message.text}')
         bot.send_message(message.chat.id, "Нашлось больше одной кассы\n\n"
-                                          "Обратитесь в тех. поддержку за остатками на WhatsApp по номеру <u>+7(960)048-43-66</u>",
-                         parse_mode='html', reply_markup=start_markup())
+                                          "Обратитесь в тех. поддержку за остатками",
+                         parse_mode='html', reply_markup=markup_WhatsApp)
         return False
 
 
@@ -143,7 +146,7 @@ def send_last_file(message):
             bot.send_message(message.chat.id, 'Оставьте пожалуйста отзыв', reply_markup=markup_Form, parse_mode='html')
 
             # Block continue
-            bot.send_message(message.chat.id, 'Нам очень приятно что пользуетесь нашим ботом',
+            bot.send_message(message.chat.id, 'Спасибо пользуетесь нашим ботом',
                              reply_markup=start_markup(), parse_mode='html')
         else:
             logger.debug("Номер компьютера введен не правильно - " + message.text)
@@ -215,7 +218,7 @@ def send_file(message):
         bot.send_message(message.chat.id, 'Оставьте пожалуйста отзыв', reply_markup=markup_Form, parse_mode='html')
 
         # Block continue
-        bot.send_message(message.chat.id, 'Нам очень приятно что пользуетесь нашим ботом',
+        bot.send_message(message.chat.id, 'Спасибо пользуетесь нашим ботом',
                          reply_markup=start_markup(), parse_mode='html')
     except Exception as ex:
         bot.send_message(message.chat.id, 'Внутрення ошибка, попробуйте снова',
