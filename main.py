@@ -312,6 +312,7 @@ def gen_bcode_start(message):
             logger.info(f"Ввели номер компьютера '{message.text}'")
             cash = functions.check_repeat_cash(message.text)
             if check_valid_cash(message, cash) == False:
+                start_select(message)
                 return False
             cash_number = functions.check_repeat_cash(message.text).split('-')
             logger.info(f'check_repeat_cash нашел "cash-{cash_number[1]}-{cash_number[2]}"')
