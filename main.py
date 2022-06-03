@@ -24,8 +24,8 @@ def start(message):
                      "Здравствуйте <b>" + message.from_user.first_name + "</b>\n"
                                                                          "Чтобы получить остатки нажмите на кнопку <u><b>Получить остатки</b></u>\n\n"
                                                                          "Остатки формируются каждый день в 12:50. Компьютер обязательно должен быть включен\n\n"
-                                                                         "Чтобы добавить себе штрихкод на компьютер нажмите на кнопку <u><b>Добавить штрихкод</b></u>\n\n"
-                                                                         "Максимальное название товара не должно превышать 35 символов\n\n"
+                                                                         # "Чтобы добавить себе штрихкод на компьютер нажмите на кнопку <u><b>Добавить штрихкод</b></u>\n\n"
+                                                                         # "Максимальное название товара не должно превышать 35 символов\n\n"
                                                                          "В случае любых вопросов обращайтесь к нам на WhatsApp по номеру <u>+7(960)048-43-66</u>",
                      parse_mode='html')
     start_select(message)
@@ -33,7 +33,7 @@ def start(message):
 
 @bot.message_handler(content_types=['text'])
 def catalog(message):
-    if re.fullmatch("Остатки", message.text):
+    if re.fullmatch(r"Остатки|остатки", message.text):
         bot.send_message(message.chat.id, 'Вам нужно только нажимать на кнопки под текстом и следовать указанием')
         start_select(message)
     #
@@ -110,21 +110,27 @@ def callback_query(call):
                          '<u><b>Список по датам</b></u> - Выведем даты последних 6 сгенерированных накладных',
                          reply_markup=markup, parse_mode='html')
     if call.data == 'cb_choose_date_1':
+        logger.info(f"Выбрали остатки: 1")
         cashInfo.select_index_date = 1
         send_file(call.message)
     if call.data == 'cb_choose_date_2':
+        logger.info(f"Выбрали остатки: 2")
         cashInfo.select_index_date = 2
         send_file(call.message)
     if call.data == 'cb_choose_date_3':
+        logger.info(f"Выбрали остатки: 3")
         cashInfo.select_index_date = 3
         send_file(call.message)
     if call.data == 'cb_choose_date_4':
+        logger.info(f"Выбрали остатки: 4")
         cashInfo.select_index_date = 4
         send_file(call.message)
     if call.data == 'cb_choose_date_5':
+        logger.info(f"Выбрали остатки: 5")
         cashInfo.select_index_date = 5
         send_file(call.message)
     if call.data == 'cb_choose_date_6':
+        logger.info(f"Выбрали остатки: 6")
         cashInfo.select_index_date = 6
         send_file(call.message)
     if call.data == 'cb_last_ostatki':
@@ -154,11 +160,20 @@ def callback_query(call):
 
 
 def start_select(message):
+    # markup = types.InlineKeyboardMarkup()
+    # ostatki = types.InlineKeyboardButton("Получить остатки", callback_data='cb_get_ostatki')
+    # barcodes = types.InlineKeyboardButton("Добавить штрихкод", callback_data='cb_generate_barcodes')
+    # markup.add(ostatki, barcodes)
+    # bot.send_message(message.chat.id, 'Выберите действие:', reply_markup=markup)
+
     markup = types.InlineKeyboardMarkup()
-    ostatki = types.InlineKeyboardButton("Получить остатки", callback_data='cb_get_ostatki')
-    barcodes = types.InlineKeyboardButton("Добавить штрихкод", callback_data='cb_generate_barcodes')
-    markup.add(ostatki, barcodes)
-    bot.send_message(message.chat.id, 'Выберите действие:', reply_markup=markup)
+    button_lastOstatki = types.InlineKeyboardButton("Последние остатки", callback_data='cb_last_ostatki')
+    button_listOstatki = types.InlineKeyboardButton("Список по датам", callback_data='cb_list_ostatki')
+    markup.add(button_lastOstatki, button_listOstatki)
+    bot.send_message(message.chat.id,
+                     '<u><b>Последние остатки</b></u> - Получить последние сгенерированные остатки\n\n'
+                     '<u><b>Список по датам</b></u> - Выведем даты последних 6 сгенерированных накладных',
+                     reply_markup=markup, parse_mode='html')
     return markup
 
 
@@ -254,6 +269,7 @@ def send_dates_files(message):
                 line.reverse()  # Переворачиваем чтобы даты были день-месяц-год
             cash_dates = ['-'.join(line) + " " + cash_times[count] for count, line in
                           enumerate(cash_dates)]  # Соединяем даты
+            logger.info(f"Список остатков {cash_dates}")
             buttons = [types.InlineKeyboardButton(line, callback_data=f'cb_choose_date_{count}') for count, line in enumerate(cash_dates)]
 
             for i in buttons:
@@ -275,7 +291,6 @@ def send_dates_files(message):
 
 def send_file(message):
     try:
-        logger.info(message.text)
         markup = types.InlineKeyboardMarkup()
         markup.add(types.InlineKeyboardButton('Отправить на почту', callback_data='cb_send_email'))
         path = cashInfo.path_to_files[cashInfo.select_index_date]
