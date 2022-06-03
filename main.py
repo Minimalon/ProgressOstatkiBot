@@ -70,7 +70,7 @@ def callback_query(call):
     if call.data == 'cb_generate_barcodes':
         logger.info(f"Кнопка 'Добавить штрихкод' --- {call.message.chat.first_name}")
         msg = bot.send_message(call.message.chat.id, 'Напишите номер компьютера:\n'
-                                                     'Нужны только цифры. Например: <b><u>902</u></b>')
+                                                     'Нужны только цифры. Например: <b><u>902</u></b>', parse_mode='html')
         bot.register_next_step_handler(msg, gen_bcode_start)
 
     if call.data == 'cb_barcodes_alcohol':
@@ -113,13 +113,13 @@ def callback_query(call):
     if call.data == 'cb_last_ostatki':
         logger.info(f"Кнопка 'Последние остатки' --- {call.message.chat.first_name}")
         msg = bot.send_message(call.message.chat.id, 'Напишите номер компьютера:\n'
-                                                     'Нужны только цифры. Например: <b><u>902</u></b>')
+                                                     'Нужны только цифры. Например: <b><u>902</u></b>', parse_mode='html')
         bot.register_next_step_handler(msg, send_last_file)
 
     if call.data == 'cb_list_ostatki':
         logger.info(f"Кнопка 'Список остатков' --- {call.message.chat.first_name}")
         msg = bot.send_message(call.message.chat.id, 'Напишите номер компьютера:\n'
-                                                     'Нужны только цифры. Например: <b><u>902</u></b>')
+                                                     'Нужны только цифры. Например: <b><u>902</u></b>', parse_mode='html')
         bot.register_next_step_handler(msg, send_dates_files)
     # send email
     if call.data == "cb_send_email":
