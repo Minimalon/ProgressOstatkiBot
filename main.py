@@ -238,6 +238,7 @@ def send_dates_files(message):
             cash_dates = ['-'.join(line) + " " + cash_times[count] for count, line in
                           enumerate(cash_dates)]  # Соединяем даты
             buttons = [types.InlineKeyboardButton(line) for line in cash_dates]
+            logger.info(buttons)
             for i in buttons:
                 markup.add(i)
 
