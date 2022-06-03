@@ -27,7 +27,7 @@ def start(message):
                                                                          "Чтобы добавить себе штрихкод на компьютер нажмите на кнопку <u><b>Добавить штрихкод</b></u>\n\n"
                                                                          "Максимальное название товара не должно превышать 35 символов\n\n"
                                                                          "В случае любых вопросов обращайтесь к нам на WhatsApp по номеру <u>+7(960)048-43-66</u>",
-                     reply_markup=start_markup(), parse_mode='html')
+                     parse_mode='html')
     start_select(message)
 
 
@@ -124,8 +124,7 @@ def callback_query(call):
             msg = bot.send_message(call.message.chat.id, 'Введите почту: ')
             bot.register_next_step_handler(msg, send_email)
         except Exception as ex:
-            bot.send_message(call.message.chat.id, 'Внутрення ошибка, попробуйте снова',
-                             reply_markup=start_markup())
+            bot_error_send(call.message)
             logger.error(f'{ex} --- {cashInfo.cash_number}')
     # MarkUP
     if call.data == 'cb_click_form':
@@ -140,14 +139,6 @@ def start_select(message):
     barcodes = types.InlineKeyboardButton("Добавить штрихкод", callback_data='cb_generate_barcodes')
     markup.add(ostatki, barcodes)
     bot.send_message(message.chat.id, 'Выберите действие', reply_markup=markup)
-    return markup
-
-
-def start_markup():
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
-    button_ostatki = types.KeyboardButton('Получить остатки')
-    button_bcode = types.KeyboardButton('Добавить штрихкод')
-    markup.add(button_ostatki, button_bcode)
     return markup
 
 
@@ -217,7 +208,8 @@ def send_last_file(message):
             start_select(message)
         else:
             logger.debug("Номер компьютера введен не правильно - " + message.text)
-            bot.send_message(message.chat.id, 'Номер кассы введена не правильно', reply_markup=start_markup())
+            bot.send_message(message.chat.id, 'Номер кассы введена не правильно')
+            start_select(message)
     except Exception as ex:
         bot_error_send(message)
         logger.error(f'{ex} --- {cashInfo.cash_number}')
@@ -254,7 +246,8 @@ def send_dates_files(message):
             bot.register_next_step_handler(send, send_file)
         else:
             logger.debug("Номер кассы введена не правильно - " + message.text)
-            bot.send_message(message.chat.id, 'Номер кассы введена не правильно', reply_markup=start_markup())
+            bot.send_message(message.chat.id, 'Номер кассы введена не правильно')
+            start_select(message)
     except Exception as ex:
         bot_error_send(message)
         logger.error(f'{ex} --- {cashInfo.cash_number}')
@@ -296,10 +289,12 @@ def send_email(message):
             logger.info(f'Отправил {cashInfo.current_path_file} на почту {message.text} --- {cashInfo.cash_number}')
             bot.send_message(message.chat.id, 'Сообщение отправлено на почту\n\n'
                                               'Если сообщение не приходит, то оно возможно у вас в <b><u>спаме</u></b>',
-                             reply_markup=start_markup(), parse_mode='html')
+                             parse_mode='html')
+            start_select(message)
         else:
             logger.debug("Электронная почта введена не правильно - " + message.text + ' | cash-' + cashInfo.cash_number)
-            bot.send_message(message.chat.id, 'Электронная почта введена не правильно', reply_markup=start_markup())
+            bot.send_message(message.chat.id, 'Электронная почта введена не правильно')
+            start_select(message)
     except Exception as ex:
         bot_error_send(message)
         logger.error(f'{ex} --- {cashInfo.cash_number} or {cashInfo.bcode_cash_number}')
@@ -332,11 +327,11 @@ def gen_bcode_start(message):
                                    reply_markup=markup, parse_mode='html')
         else:
             logger.debug("Номер кассы введена не правильно - " + message.text)
-            bot.send_message(message.chat.id, 'Номер кассы введена не правильно', reply_markup=start_markup())
+            bot.send_message(message.chat.id, 'Номер кассы введена не правильно')
+            start_select(message)
     except Exception as ex:
         bot_error_send(message)
         logger.error(f'{ex} --- {cashInfo.bcode_cash_number}')
-
 
 
 def set_barcode(message):
@@ -366,7 +361,8 @@ def get_bcode_send(message):
             markup.add(types.InlineKeyboardButton('Отправить на почту', callback_data='cb_send_email'))
             bot.send_photo(message.chat.id, open(config.dir_path + 'logs/barcode.png', 'rb'), reply_markup=markup)
             bot.send_message(message.chat.id, 'Товар в скором времени будет добавлен к вам на кассу\n\n'
-                                              'Касса обязательно должна быть <u><b>включена</b></u> и должен быть <u><b>интернет</b></u>', parse_mode='html')
+                                              'Касса обязательно должна быть <u><b>включена</b></u> и должен быть <u><b>интернет</b></u>',
+                             parse_mode='html')
             start_select(message)
             with open(f'{config.server_path}telegram_barcode.txt',
                       'a') as barcodes_file:  # Инфа для скрипта, который будет добавлять на компы штрихкода
