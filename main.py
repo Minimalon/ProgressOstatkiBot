@@ -69,7 +69,8 @@ def callback_query(call):
     # Barcodes
     if call.data == 'cb_generate_barcodes':
         logger.info(f"Кнопка 'Добавить штрихкод' --- {call.message.chat.first_name}")
-        msg = bot.send_message(call.message.chat.id, 'Напишите номер компьютера:')
+        msg = bot.send_message(call.message.chat.id, 'Напишите номер компьютера:\n'
+                                                     'Нужны только цифры. Например: <b><u>902</u></b>')
         bot.register_next_step_handler(msg, gen_bcode_start)
 
     if call.data == 'cb_barcodes_alcohol':
@@ -111,12 +112,14 @@ def callback_query(call):
 
     if call.data == 'cb_last_ostatki':
         logger.info(f"Кнопка 'Последние остатки' --- {call.message.chat.first_name}")
-        msg = bot.send_message(call.message.chat.id, 'Напишите номер компьютера:')
+        msg = bot.send_message(call.message.chat.id, 'Напишите номер компьютера:\n'
+                                                     'Нужны только цифры. Например: <b><u>902</u></b>')
         bot.register_next_step_handler(msg, send_last_file)
 
     if call.data == 'cb_list_ostatki':
         logger.info(f"Кнопка 'Список остатков' --- {call.message.chat.first_name}")
-        msg = bot.send_message(call.message.chat.id, 'Напишите номер компьютера:')
+        msg = bot.send_message(call.message.chat.id, 'Напишите номер компьютера:\n'
+                                                     'Нужны только цифры. Например: <b><u>902</u></b>')
         bot.register_next_step_handler(msg, send_dates_files)
     # send email
     if call.data == "cb_send_email":
@@ -224,7 +227,7 @@ def send_dates_files(message):
             logger.info(f'check_repeat_cash нашел "{cashInfo.cash_number}"')
             check_valid_cash(message, cash)
             cash_files = functions.get_last_files(cashInfo.cash_number, 6)
-            markup = types.ReplyKeyboardMarkup(row_width=3)
+            markup = types.InlineKeyboardMarkup()
             cash_dates = [line.split("/")[-1] for line in cash_files]  # Берём только название файла
             # cash_dates = [line.split("/")[-1] for line in cash_files]  # Берём только даты
             cash_times = [":".join(line.split("_")[4:6]).split('.')[0] for line in
@@ -234,7 +237,7 @@ def send_dates_files(message):
                 line.reverse()  # Переворачиваем чтобы даты были день-месяц-год
             cash_dates = ['-'.join(line) + " " + cash_times[count] for count, line in
                           enumerate(cash_dates)]  # Соединяем даты
-            buttons = [types.KeyboardButton(line) for line in cash_dates]
+            buttons = [types.InlineKeyboardButton(line) for line in cash_dates]
             for i in buttons:
                 markup.add(i)
 
