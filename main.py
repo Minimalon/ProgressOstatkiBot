@@ -110,22 +110,22 @@ def callback_query(call):
                          '<u><b>Список по датам</b></u> - Выведем даты последних 6 сгенерированных накладных',
                          reply_markup=markup, parse_mode='html')
     if call.data == 'cb_choose_date_1':
-        cashInfo.select_index_date = '1'
+        cashInfo.select_index_date = 1
         send_file(call.message)
     if call.data == 'cb_choose_date_2':
-        cashInfo.select_index_date = '2'
+        cashInfo.select_index_date = 2
         send_file(call.message)
     if call.data == 'cb_choose_date_3':
-        cashInfo.select_index_date = '3'
+        cashInfo.select_index_date = 3
         send_file(call.message)
     if call.data == 'cb_choose_date_4':
-        cashInfo.select_index_date = '4'
+        cashInfo.select_index_date = 4
         send_file(call.message)
     if call.data == 'cb_choose_date_5':
-        cashInfo.select_index_date = '5'
+        cashInfo.select_index_date = 5
         send_file(call.message)
     if call.data == 'cb_choose_date_6':
-        cashInfo.select_index_date = '6'
+        cashInfo.select_index_date = 6
         send_file(call.message)
     if call.data == 'cb_last_ostatki':
         logger.info(f"Кнопка 'Последние остатки' --- {call.message.chat.first_name}")
