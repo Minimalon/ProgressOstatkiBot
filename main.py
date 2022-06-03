@@ -239,7 +239,8 @@ def send_dates_files(message):
             cash_dates = ['-'.join(line) + " " + cash_times[count] for count, line in
                           enumerate(cash_dates)]  # Соединяем даты
             buttons = [types.InlineKeyboardButton(line, callback_data='cb_choose_date') for line in cash_dates]
-            logger.info(buttons)
+            buttons = [logger.info(line) for line in cash_dates]
+
             for i in buttons:
                 markup.add(i)
 
@@ -248,7 +249,6 @@ def send_dates_files(message):
             cashInfo.dates_files = cash_dates
 
             bot.send_message(message.chat.id, 'Выберите одну из дат:', reply_markup=markup)
-            bot.register_next_step_handler(send, send_file)
         else:
             logger.debug("Номер кассы введена не правильно - " + message.text)
             bot.send_message(message.chat.id, 'Номер кассы введена не правильно')
