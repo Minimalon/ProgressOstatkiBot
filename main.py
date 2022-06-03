@@ -68,25 +68,30 @@ def catalog(message):
 def callback_query(call):
     # Barcodes
     if call.data == 'cb_generate_barcodes':
+        logger.info("Кнопка 'Добавить штрихкод'")
         msg = bot.send_message(call.message.chat.id, 'Напишите номер компьютера:')
         bot.register_next_step_handler(msg, gen_bcode_start)
 
     if call.data == 'cb_barcodes_alcohol':
+        logger.info("Кнопка 'Крепкий алкоголь'")
         cashInfo.bcode_otdel = '1'
         bcode = bot.send_message(call.message.chat.id, 'Напишите штрихкод товара:')
         bot.register_next_step_handler(bcode, set_barcode)
 
     if call.data == 'cb_barcodes_beer':
+        logger.info("Кнопка 'Пиво'")
         cashInfo.bcode_otdel = '2'
         bcode = bot.send_message(call.message.chat.id, 'Напишите штрихкод товара:')
         bot.register_next_step_handler(bcode, set_barcode)
 
     if call.data == 'cb_barcodes_cigaretes':
+        logger.info("Кнопка 'Сигареты'")
         cashInfo.bcode_otdel = '3'
         bcode = bot.send_message(call.message.chat.id, 'Напишите штрихкод товара:')
         bot.register_next_step_handler(bcode, set_barcode)
 
     if call.data == 'cb_barcodes_other':
+        logger.info("Кнопка 'Прочее'")
         cashInfo.bcode_otdel = '4'
         cashInfo.bcode = functions.get_valid_barcode(cashInfo.bcode_cash_number)
         msg = bot.send_message(call.message.chat.id, "Напишите короткое название товара:")
@@ -105,10 +110,12 @@ def callback_query(call):
                          reply_markup=markup, parse_mode='html')
 
         if call.data == 'cb_last_ostatki':
+            logger.info("Кнопка 'Последние остатки'")
             msg = bot.send_message(call.message.chat.id, 'Напишите номер компьютера:')
             bot.register_next_step_handler(msg, send_last_file)
 
         if call.data == 'cb_list_ostatki':
+            logger.info("Кнопка 'Список остатков'")
             msg = bot.send_message(call.message.chat.id, 'Напишите номер компьютера:')
             bot.register_next_step_handler(msg, send_dates_files)
     # send email
