@@ -32,7 +32,6 @@ def start(message):
 
 
 @bot.message_handler(content_types=['text'])
-@logger.catch
 def catalog(message):
     if re.fullmatch("Остатки", message.text):
         bot.send_message(message.chat.id, 'Вам нужно только нажимать на кнопки под текстом и следовать указанием')
@@ -65,6 +64,7 @@ def catalog(message):
 
 
 @bot.callback_query_handler(func=lambda call: True)
+@logger.catch()
 def callback_query(call):
     # Barcodes
     if call.data == 'cb_generate_barcodes':
