@@ -110,7 +110,7 @@ def callback_query(call):
                          '<u><b>Список по датам</b></u> - Выведем даты последних 6 сгенерированных накладных',
                          reply_markup=markup, parse_mode='html')
     if call.data == 'cb_choose_date':
-        send_file(call.message)
+        send_file(call.message.reply_markup.inline_keyboard.text)
     if call.data == 'cb_last_ostatki':
         logger.info(f"Кнопка 'Последние остатки' --- {call.message.chat.first_name}")
         msg = bot.send_message(call.message.chat.id, 'Напишите номер компьютера:\n'
