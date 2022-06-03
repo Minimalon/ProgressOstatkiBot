@@ -109,7 +109,8 @@ def callback_query(call):
                          '<u><b>Последние остатки</b></u> - Получить последние сгенерированные остатки\n\n'
                          '<u><b>Список по датам</b></u> - Выведем даты последних 6 сгенерированных накладных',
                          reply_markup=markup, parse_mode='html')
-
+    if call.data == 'cb_choose_date':
+        send_file(call.message)
     if call.data == 'cb_last_ostatki':
         logger.info(f"Кнопка 'Последние остатки' --- {call.message.chat.first_name}")
         msg = bot.send_message(call.message.chat.id, 'Напишите номер компьютера:\n'
@@ -237,7 +238,7 @@ def send_dates_files(message):
                 line.reverse()  # Переворачиваем чтобы даты были день-месяц-год
             cash_dates = ['-'.join(line) + " " + cash_times[count] for count, line in
                           enumerate(cash_dates)]  # Соединяем даты
-            buttons = [types.InlineKeyboardButton(line) for line in cash_dates]
+            buttons = [types.InlineKeyboardButton(line, callback_data='cb_choose_date') for line in cash_dates]
             logger.info(buttons)
             for i in buttons:
                 markup.add(i)
@@ -246,7 +247,7 @@ def send_dates_files(message):
             cashInfo.path_to_files = cash_files
             cashInfo.dates_files = cash_dates
 
-            send = bot.send_message(message.chat.id, 'Выберите одну из дат:', reply_markup=markup)
+            bot.send_message(message.chat.id, 'Выберите одну из дат:', reply_markup=markup)
             bot.register_next_step_handler(send, send_file)
         else:
             logger.debug("Номер кассы введена не правильно - " + message.text)
