@@ -239,7 +239,6 @@ def send_dates_files(message):
             cash_dates = ['-'.join(line) + " " + cash_times[count] for count, line in
                           enumerate(cash_dates)]  # Соединяем даты
             buttons = [types.InlineKeyboardButton(line, callback_data='cb_choose_date') for line in cash_dates]
-            buttons = [logger.info(line) for line in cash_dates]
 
             for i in buttons:
                 markup.add(i)
