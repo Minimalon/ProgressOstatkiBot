@@ -21,11 +21,11 @@ logger.info("Начал работу")
 def start(message):
     logger.info(f"Зашел {message.from_user.first_name}")
     bot.send_message(message.chat.id,
-                     "Здравствуйте <b>" + message.from_user.first_name + "</b>\n"
-                                                                         "Чтобы получить остатки нажмите на кнопку <u><b>Получить остатки</b></u>\n\n"
-                                                                         "Остатки формируются каждый день в 12:50. Компьютер обязательно должен быть включен\n\n"
-                                                                         # "Чтобы добавить себе штрихкод на компьютер нажмите на кнопку <u><b>Добавить штрихкод</b></u>\n\n"
-                                                                         # "Максимальное название товара не должно превышать 35 символов\n\n"
+                     "Здравствуйте <b>" + message.from_user.first_name + "</b>\n\n"
+                     # "Чтобы получить остатки нажмите на кнопку <u><b>Получить остатки</b></u>\n\n"
+                                                                         "Остатки формируются каждый день в 12:50. Компьютер обязательно должен быть <u><b>включен</b></u> и обязательно должен быть <u><b>интернет</b></u>\n"
+                     # "Чтобы добавить себе штрихкод на компьютер нажмите на кнопку <u><b>Добавить штрихкод</b></u>\n\n"
+                     # "Максимальное название товара не должно превышать 35 символов\n\n"
                                                                          "В случае любых вопросов обращайтесь к нам на WhatsApp по номеру <u>+7(960)048-43-66</u>",
                      parse_mode='html')
     start_select(message)
@@ -70,7 +70,8 @@ def callback_query(call):
     if call.data == 'cb_generate_barcodes':
         logger.info(f"Кнопка 'Добавить штрихкод' --- {call.message.chat.first_name}")
         msg = bot.send_message(call.message.chat.id, 'Напишите номер компьютера:\n'
-                                                     'Нужны только цифры. Например: <b><u>902</u></b>', parse_mode='html')
+                                                     'Нужны только цифры. Например: <b><u>902</u></b>',
+                               parse_mode='html')
         bot.register_next_step_handler(msg, gen_bcode_start)
 
     if call.data == 'cb_barcodes_alcohol':
@@ -136,13 +137,15 @@ def callback_query(call):
     if call.data == 'cb_last_ostatki':
         logger.info(f"Кнопка 'Последние остатки' --- {call.message.chat.first_name}")
         msg = bot.send_message(call.message.chat.id, 'Напишите номер компьютера:\n'
-                                                     'Нужны только цифры. Например: <b><u>902</u></b>', parse_mode='html')
+                                                     'Нужны только цифры. Например: <b><u>902</u></b>',
+                               parse_mode='html')
         bot.register_next_step_handler(msg, send_last_file)
 
     if call.data == 'cb_list_ostatki':
         logger.info(f"Кнопка 'Список остатков' --- {call.message.chat.first_name}")
         msg = bot.send_message(call.message.chat.id, 'Напишите номер компьютера:\n'
-                                                     'Нужны только цифры. Например: <b><u>902</u></b>', parse_mode='html')
+                                                     'Нужны только цифры. Например: <b><u>902</u></b>',
+                               parse_mode='html')
         bot.register_next_step_handler(msg, send_dates_files)
     # send email
     if call.data == "cb_send_email":
@@ -270,7 +273,8 @@ def send_dates_files(message):
             cash_dates = ['-'.join(line) + " " + cash_times[count] for count, line in
                           enumerate(cash_dates)]  # Соединяем даты
             logger.info(f"Список остатков {cash_dates}")
-            buttons = [types.InlineKeyboardButton(line, callback_data=f'cb_choose_date_{count}') for count, line in enumerate(cash_dates)]
+            buttons = [types.InlineKeyboardButton(line, callback_data=f'cb_choose_date_{count}') for count, line in
+                       enumerate(cash_dates)]
 
             for i in buttons:
                 markup.add(i)
