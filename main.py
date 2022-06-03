@@ -109,15 +109,15 @@ def callback_query(call):
                          '<u><b>Список по датам</b></u> - Выведем даты последних 6 сгенерированных накладных',
                          reply_markup=markup, parse_mode='html')
 
-        if call.data == 'cb_last_ostatki':
-            logger.info("Кнопка 'Последние остатки'")
-            msg = bot.send_message(call.message.chat.id, 'Напишите номер компьютера:')
-            bot.register_next_step_handler(msg, send_last_file)
+    if call.data == 'cb_last_ostatki':
+        logger.info("Кнопка 'Последние остатки'")
+        msg = bot.send_message(call.message.chat.id, 'Напишите номер компьютера:')
+        bot.register_next_step_handler(msg, send_last_file)
 
-        if call.data == 'cb_list_ostatki':
-            logger.info("Кнопка 'Список остатков'")
-            msg = bot.send_message(call.message.chat.id, 'Напишите номер компьютера:')
-            bot.register_next_step_handler(msg, send_dates_files)
+    if call.data == 'cb_list_ostatki':
+        logger.info("Кнопка 'Список остатков'")
+        msg = bot.send_message(call.message.chat.id, 'Напишите номер компьютера:')
+        bot.register_next_step_handler(msg, send_dates_files)
     # send email
     if call.data == "cb_send_email":
         try:
