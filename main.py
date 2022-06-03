@@ -28,46 +28,90 @@ def start(message):
                                                                          "Максимальное название товара не должно превышать 35 символов\n\n"
                                                                          "В случае любых вопросов обращайтесь к нам на WhatsApp по номеру <u>+7(960)048-43-66</u>",
                      reply_markup=start_markup(), parse_mode='html')
+    start_select(message)
 
 
 @bot.message_handler(content_types=['text'])
 @logger.catch
 def catalog(message):
-    if message.text.lower() == 'получить остатки':
-        logger.info("Кнопка 'получить остатки'")
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
-        button_lastOstatki = types.KeyboardButton("Последние остатки")
-        button_listOstatki = types.KeyboardButton("Список по датам")
-        markup.add(button_lastOstatki, button_listOstatki)
-        bot.send_message(message.chat.id,
-                         '<u><b>Последние остатки</b></u> - Получить последние сгенерированные остатки\n\n'
-                         '<u><b>Список по датам</b></u> - Выведем даты последних 6 сгенерированных накладных',
-                         reply_markup=markup, parse_mode='html')
-
-    elif message.text.lower() == "последние остатки":
-        logger.info("Кнопка 'последние остатки'")
-
-        msg = bot.send_message(message.chat.id, "Введите номер компьютера:", parse_mode="html")
-        bot.register_next_step_handler(msg, send_last_file)
-
-    elif message.text.lower() == "список по датам":
-        logger.info("Кнопка 'список по датам'")
-
-        msg = bot.send_message(message.chat.id, "Введите номер компьютера:", parse_mode="html")
-        bot.register_next_step_handler(msg, send_dates_files)
-
-    elif message.text.lower() == "добавить штрихкод":
-        logger.info("Кнопка 'добавить штрихкод'")
-
-        msg = bot.send_message(message.chat.id, "Введите номер компьютера:", parse_mode="html")
-        bot.register_next_step_handler(msg, gen_bcode_start)
+    if re.fullmatch("Остатки", message.text):
+        bot.send_message(message.chat.id, 'Вам нужно только нажимать на кнопки под текстом и следовать указанием')
+        start_select(message)
+    #
+    # if message.text.lower() == 'получить остатки':
+    #
+    #
+    # elif message.text.lower() == "последние остатки":
+    #     logger.info("Кнопка 'последние остатки'")
+    #
+    #     msg = bot.send_message(message.chat.id, "Введите номер компьютера:", parse_mode="html")
+    #     bot.register_next_step_handler(msg, send_last_file)
+    #
+    # elif message.text.lower() == "список по датам":
+    #     logger.info("Кнопка 'список по датам'")
+    #
+    #     msg = bot.send_message(message.chat.id, "Введите номер компьютера:", parse_mode="html")
+    #     bot.register_next_step_handler(msg, send_dates_files)
+    #
+    # elif message.text.lower() == "добавить штрихкод":
+    #     logger.info("Кнопка 'добавить штрихкод'")
+    #
+    #     msg = bot.send_message(message.chat.id, "Введите номер компьютера:", parse_mode="html")
+    #     bot.register_next_step_handler(msg, gen_bcode_start)
     else:
         logger.debug("Не понимаю данной команды - " + message.text)
-        bot.send_message(message.chat.id, "Не понимаю данной команды")
+        bot.send_message(message.chat.id, f"Не понимаю данной команды '{message.text}'")
+        start_select(message)
 
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback_query(call):
+    # Barcodes
+    if call.data == 'cb_generate_barcodes':
+        msg = bot.send_message(call.message.chat.id, 'Напишите номер компьютера:')
+        bot.register_next_step_handler(msg, gen_bcode_start)
+
+    if call.data == 'cb_barcodes_alcohol':
+        cashInfo.bcode_otdel = '1'
+        bcode = bot.send_message(call.message.chat.id, 'Напишите штрихкод товара:')
+        bot.register_next_step_handler(bcode, set_barcode)
+
+    if call.data == 'cb_barcodes_beer':
+        cashInfo.bcode_otdel = '2'
+        bcode = bot.send_message(call.message.chat.id, 'Напишите штрихкод товара:')
+        bot.register_next_step_handler(bcode, set_barcode)
+
+    if call.data == 'cb_barcodes_cigaretes':
+        cashInfo.bcode_otdel = '3'
+        bcode = bot.send_message(call.message.chat.id, 'Напишите штрихкод товара:')
+        bot.register_next_step_handler(bcode, set_barcode)
+
+    if call.data == 'cb_barcodes_other':
+        cashInfo.bcode_otdel = '4'
+        cashInfo.bcode = functions.get_valid_barcode(cashInfo.bcode_cash_number)
+        msg = bot.send_message(call.message.chat.id, "Напишите короткое название товара:")
+        bot.register_next_step_handler(msg, get_bcode_send)
+
+    # Ostatki
+    if call.data == 'cb_get_ostatki':
+        logger.info("Кнопка 'получить остатки'")
+        markup = types.InlineKeyboardMarkup()
+        button_lastOstatki = types.InlineKeyboardButton("Последние остатки", callback_data='cb_last_ostatki')
+        button_listOstatki = types.InlineKeyboardButton("Список по датам", callback_data='cb_list_ostatki')
+        markup.add(button_lastOstatki, button_listOstatki)
+        bot.send_message(call.message.chat.id,
+                         '<u><b>Последние остатки</b></u> - Получить последние сгенерированные остатки\n\n'
+                         '<u><b>Список по датам</b></u> - Выведем даты последних 6 сгенерированных накладных',
+                         reply_markup=markup, parse_mode='html')
+
+        if call.data == 'cb_last_ostatki':
+            msg = bot.send_message(call.message.chat.id, 'Напишите номер компьютера:')
+            bot.register_next_step_handler(msg, send_last_file)
+
+        if call.data == 'cb_list_ostatki':
+            msg = bot.send_message(call.message.chat.id, 'Напишите номер компьютера:')
+            bot.register_next_step_handler(msg, send_dates_files)
+    # send email
     if call.data == "cb_send_email":
         try:
             msg = bot.send_message(call.message.chat.id, 'Введите почту: ')
@@ -76,10 +120,20 @@ def callback_query(call):
             bot.send_message(call.message.chat.id, 'Внутрення ошибка, попробуйте снова',
                              reply_markup=start_markup())
             logger.error(f'{ex} --- {cashInfo.cash_number}')
+    # MarkUP
     if call.data == 'cb_click_form':
         logger.info("Кнопка 'Оставить отзыв'")
     if call.data == 'cb_WhatsApp_markup':
         logger.info("Кнопка 'Тех.Поддержка'")
+
+
+def start_select(message):
+    markup = types.InlineKeyboardMarkup()
+    ostatki = types.InlineKeyboardButton("Получить остатки", callback_data='cb_get_ostatki')
+    barcodes = types.InlineKeyboardButton("Добавить штрихкод", callback_data='cb_generate_barcodes')
+    markup.add(ostatki, barcodes)
+    bot.send_message(message.chat.id, 'Выберите действие', reply_markup=markup)
+    return markup
 
 
 def start_markup():
@@ -114,8 +168,8 @@ def check_valid_cash(message, cash):
 
 
 def bot_error_send(message):
-    bot.send_message(message.chat.id, 'Внутреняя ошибка, попробуйте снова',
-                     reply_markup=start_markup())
+    bot.send_message(message.chat.id, 'Внутреняя ошибка, попробуйте снова')
+    start_select(message)
 
 
 def send_last_file(message):
@@ -257,11 +311,11 @@ def gen_bcode_start(message):
             cash_number = functions.check_repeat_cash(message.text).split('-')
             logger.info(f'check_repeat_cash нашел "cash-{cash_number[1]}-{cash_number[2]}"')
             cashInfo.bcode_cash_number = f'{cash_number[1]}-{cash_number[2]}'
-            markup = types.ReplyKeyboardMarkup()
-            alcohol = types.KeyboardButton('Крепкий алкоголь')
-            beer = types.KeyboardButton('Пиво')
-            cigarettes = types.KeyboardButton('Сигареты')
-            other = types.KeyboardButton('Прочее')
+            markup = types.InlineKeyboardMarkup()
+            alcohol = types.InlineKeyboardButton('Крепкий алкоголь', callback_data='cb_barcodes_alcohol')
+            beer = types.InlineKeyboardButton('Пиво', callback_data='cb_barcodes_beer')
+            cigarettes = types.InlineKeyboardButton('Сигареты', callback_data='cb_barcodes_cigaretes')
+            other = types.InlineKeyboardButton('Прочее', callback_data='cb_barcodes_other')
             markup.add(alcohol, beer, cigarettes, other)
 
             msg = bot.send_message(message.chat.id, 'Выберите какой товар хотите добавить:\n\n'
@@ -270,7 +324,6 @@ def gen_bcode_start(message):
                                                     '<u><b>Сигареты</b></u> - любой вид сигарет\n\n'
                                                     '<u><b>Прочее</b></u> - товары которые продаются как правило через ИП. Например: мыло, треугольник, хлеб',
                                    reply_markup=markup, parse_mode='html')
-            bot.register_next_step_handler(msg, get_bcode_otdel)
         else:
             logger.debug("Номер кассы введена не правильно - " + message.text)
             bot.send_message(message.chat.id, 'Номер кассы введена не правильно', reply_markup=start_markup())
@@ -278,33 +331,6 @@ def gen_bcode_start(message):
         bot_error_send(message)
         logger.error(f'{ex} --- {cashInfo.bcode_cash_number}')
 
-
-def get_bcode_otdel(message):
-    try:
-        if message.text.lower() == 'крепкий алкоголь':
-            cashInfo.bcode_otdel = '1'
-            bcode = bot.send_message(message.chat.id, 'Введите штрихкод товара:')
-            bot.register_next_step_handler(bcode, set_barcode)
-        elif message.text.lower() == 'пиво':
-            cashInfo.bcode_otdel = '2'
-            bcode = bot.send_message(message.chat.id, 'Введите штрихкод товара:')
-            bot.register_next_step_handler(bcode, set_barcode)
-        elif message.text.lower() == 'сигареты':
-            cashInfo.bcode_otdel = '3'
-            bcode = bot.send_message(message.chat.id, 'Введите штрихкод товара:')
-            bot.register_next_step_handler(bcode, set_barcode)
-        elif message.text.lower() == 'прочее':
-            cashInfo.bcode_otdel = '4'
-            cashInfo.bcode = functions.get_valid_barcode(cashInfo.bcode_cash_number)
-            msg = bot.send_message(message.chat.id, "Введите короткое название товара:")
-            bot.register_next_step_handler(msg, get_bcode_send)
-        else:
-            bot.send_message(message.chat.id, "Не понимаю данной команды")
-
-
-    except Exception as ex:
-        bot_error_send(message)
-        logger.error(f'{ex} --- {cashInfo.bcode_cash_number}')
 
 
 def set_barcode(message):
@@ -317,8 +343,8 @@ def set_barcode(message):
     else:
         logger.debug(
             f"Штрихкод неверен {message.text} - длина штрихкода({len(message.text)}) --- {cashInfo.bcode_cash_number}")
-        bot.send_message(message.chat.id, 'Штрихкод должен быть только из цифр. Попробуйте всё с начала',
-                         reply_markup=start_markup())
+        bot.send_message(message.chat.id, 'Штрихкод должен быть только из цифр. Попробуйте всё с начала')
+        start_select(message)
 
 
 def get_bcode_send(message):
@@ -334,8 +360,8 @@ def get_bcode_send(message):
             markup.add(types.InlineKeyboardButton('Отправить на почту', callback_data='cb_send_email'))
             bot.send_photo(message.chat.id, open(config.dir_path + 'logs/barcode.png', 'rb'), reply_markup=markup)
             bot.send_message(message.chat.id, 'Товар в скором времени будет добавлен к вам на кассу\n\n'
-                                              'Касса обязательно должна быть <u><b>включена</b></u> и должен быть <u><b>интернет</b></u>',
-                             reply_markup=start_markup(), parse_mode='html')
+                                              'Касса обязательно должна быть <u><b>включена</b></u> и должен быть <u><b>интернет</b></u>', parse_mode='html')
+            start_select(message)
             with open(f'{config.server_path}telegram_barcode.txt',
                       'a') as barcodes_file:  # Инфа для скрипта, который будет добавлять на компы штрихкода
                 barcodes_file.write(
@@ -345,8 +371,8 @@ def get_bcode_send(message):
         else:
             logger.debug(
                 f"Штрихкод неверен {message.text} - длина штрихкода({len(message.text)}) --- {cashInfo.bcode_cash_number}")
-            bot.send_message(message.chat.id, 'Название товара введено не верно. Максимальная длина 35 символов',
-                             reply_markup=start_markup())
+            bot.send_message(message.chat.id, 'Название товара введено не верно. Максимальная длина 35 символов')
+            start_select(message)
     except Exception as ex:
         bot_error_send(message)
         logger.error(f'{ex} --- {cashInfo.bcode_cash_number}')
