@@ -214,8 +214,7 @@ def send_last_file(message):
             bot.send_message(message.chat.id, 'Оставьте пожалуйста отзыв', reply_markup=markup_Form, parse_mode='html')
 
             # Block continue
-            bot.send_message(message.chat.id, 'Спасибо что пользуетесь нашим ботом',
-                             reply_markup=start_markup(), parse_mode='html')
+            start_select(message)
         else:
             logger.debug("Номер компьютера введен не правильно - " + message.text)
             bot.send_message(message.chat.id, 'Номер кассы введена не правильно', reply_markup=start_markup())
@@ -282,8 +281,7 @@ def send_file(message):
         bot.send_message(message.chat.id, 'Оставьте пожалуйста отзыв', reply_markup=markup_Form, parse_mode='html')
 
         # Block continue
-        bot.send_message(message.chat.id, 'Спасибо что пользуетесь нашим ботом',
-                         reply_markup=start_markup(), parse_mode='html')
+        start_select(message)
     except Exception as ex:
         bot_error_send(message)
         logger.error(f'{ex} --- {cashInfo.cash_number}')
