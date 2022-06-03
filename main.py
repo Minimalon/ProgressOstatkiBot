@@ -220,7 +220,7 @@ def send_last_file(message):
 
 
 def send_dates_files(message):
-    # try:
+    try:
         regex = re.compile(r'[0-9]{1,4}')
         if re.fullmatch(regex, message.text):
             logger.info(f"Ввели номер компьютера '{message.text}'")
@@ -252,9 +252,9 @@ def send_dates_files(message):
             logger.debug("Номер кассы введена не правильно - " + message.text)
             bot.send_message(message.chat.id, 'Номер кассы введена не правильно')
             start_select(message)
-    # except Exception as ex:
-    #     bot_error_send(message)
-    #     logger.error(f'{ex} --- {cashInfo.cash_number}')
+    except Exception as ex:
+        bot_error_send(message)
+        logger.error(f'{ex} --- {cashInfo.cash_number}')
 
 
 def send_file(message):
