@@ -99,14 +99,14 @@ def markup_WhatsApp():
 
 def check_valid_cash(message, cash):
     if cash == '--':
-        logger.debug(f'Данной кассы не найдено "{message.text}"')
+        logger.error(f'Данной кассы не найдено "{message.text}"')
 
         bot.send_message(message.chat.id, "Данной кассы не найдено \n\n"
                                           "Обратитесь в тех. поддержку",
                          parse_mode='html', reply_markup=markup_WhatsApp())
         return False
     elif cash == '---':
-        logger.debug(f'Нашлось больше одной кассы "{message.text}"')
+        logger.error(f'Нашлось больше одной кассы "{message.text}"')
         bot.send_message(message.chat.id, "Нашлось больше одной кассы\n\n"
                                           "Обратитесь в тех. поддержку",
                          parse_mode='html', reply_markup=markup_WhatsApp())
