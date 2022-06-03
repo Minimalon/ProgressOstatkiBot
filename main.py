@@ -259,6 +259,7 @@ def send_dates_files(message):
 
 def send_file(message):
     try:
+        logger.info(message.text)
         markup = types.InlineKeyboardMarkup()
         markup.add(types.InlineKeyboardButton('Отправить на почту', callback_data='cb_send_email'))
         path = cashInfo.path_to_files[cashInfo.dates_files.index(message.text)]
