@@ -69,6 +69,8 @@ def callback_query(call):
     # Barcodes
     if call.data == 'cb_generate_barcodes':
         logger.info(f"Кнопка 'Добавить штрихкод' --- {call.message.from_user.first_name}")
+        logger.info(f"Кнопка 'Добавить штрихкод' --- {call.message}")
+
         msg = bot.send_message(call.message.chat.id, 'Напишите номер компьютера:')
         bot.register_next_step_handler(msg, gen_bcode_start)
 
@@ -138,7 +140,7 @@ def start_select(message):
     ostatki = types.InlineKeyboardButton("Получить остатки", callback_data='cb_get_ostatki')
     barcodes = types.InlineKeyboardButton("Добавить штрихкод", callback_data='cb_generate_barcodes')
     markup.add(ostatki, barcodes)
-    bot.send_message(message.chat.id, 'Выберите действие', reply_markup=markup)
+    bot.send_message(message.chat.id, 'Выберите действие:', reply_markup=markup)
     return markup
 
 
