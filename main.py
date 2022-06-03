@@ -247,7 +247,7 @@ def send_dates_files(message):
             cashInfo.path_to_files = cash_files
             cashInfo.dates_files = cash_dates
 
-            bot.send_message(message.chat.id, 'Выберите одну из дат:', reply_markup=markup)
+            bot.send_message(message.chat.id, 'Выберите нужную дату остатков:', reply_markup=markup)
         else:
             logger.debug("Номер кассы введена не правильно - " + message.text)
             bot.send_message(message.chat.id, 'Номер кассы введена не правильно')
