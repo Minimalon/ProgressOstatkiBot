@@ -109,9 +109,24 @@ def callback_query(call):
                          '<u><b>Последние остатки</b></u> - Получить последние сгенерированные остатки\n\n'
                          '<u><b>Список по датам</b></u> - Выведем даты последних 6 сгенерированных накладных',
                          reply_markup=markup, parse_mode='html')
-    if call.data == 'cb_choose_date':
-        logger.info(call)
-        # send_file(call.message.reply_markup)
+    if call.data == 'cb_choose_date_1':
+        cashInfo.select_index_date = '1'
+        send_file(call.message)
+    if call.data == 'cb_choose_date_2':
+        cashInfo.select_index_date = '2'
+        send_file(call.message)
+    if call.data == 'cb_choose_date_3':
+        cashInfo.select_index_date = '3'
+        send_file(call.message)
+    if call.data == 'cb_choose_date_4':
+        cashInfo.select_index_date = '4'
+        send_file(call.message)
+    if call.data == 'cb_choose_date_5':
+        cashInfo.select_index_date = '5'
+        send_file(call.message)
+    if call.data == 'cb_choose_date_6':
+        cashInfo.select_index_date = '6'
+        send_file(call.message)
     if call.data == 'cb_last_ostatki':
         logger.info(f"Кнопка 'Последние остатки' --- {call.message.chat.first_name}")
         msg = bot.send_message(call.message.chat.id, 'Напишите номер компьютера:\n'
@@ -239,7 +254,7 @@ def send_dates_files(message):
                 line.reverse()  # Переворачиваем чтобы даты были день-месяц-год
             cash_dates = ['-'.join(line) + " " + cash_times[count] for count, line in
                           enumerate(cash_dates)]  # Соединяем даты
-            buttons = [types.InlineKeyboardButton(line, callback_data='cb_choose_date') for line in cash_dates]
+            buttons = [types.InlineKeyboardButton(line, callback_data=f'cb_choose_date_{count}') for count, line in enumerate(cash_dates)]
 
             for i in buttons:
                 markup.add(i)
@@ -263,7 +278,7 @@ def send_file(message):
         logger.info(message.text)
         markup = types.InlineKeyboardMarkup()
         markup.add(types.InlineKeyboardButton('Отправить на почту', callback_data='cb_send_email'))
-        path = cashInfo.path_to_files[cashInfo.dates_files.index(message.text)]
+        path = cashInfo.path_to_files[cashInfo.select_index_date]
 
         # Инфа для глобальной переменной
         cashInfo.current_path_file = path

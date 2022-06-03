@@ -1,5 +1,6 @@
 cash_number = ''
 path_to_files = ''
+select_index_date = ''
 dates_files = ''
 current_path_file = ''
 
