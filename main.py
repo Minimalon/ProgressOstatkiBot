@@ -68,32 +68,31 @@ def catalog(message):
 def callback_query(call):
     # Barcodes
     if call.data == 'cb_generate_barcodes':
-        logger.info(f"Кнопка 'Добавить штрихкод' --- {call.message.from_user.first_name}")
-        logger.info(f"Кнопка 'Добавить штрихкод' --- {call.message}")
+        logger.info(f"Кнопка 'Добавить штрихкод' --- {call.message.chat.from_user.first_name}")
 
         msg = bot.send_message(call.message.chat.id, 'Напишите номер компьютера:')
         bot.register_next_step_handler(msg, gen_bcode_start)
 
     if call.data == 'cb_barcodes_alcohol':
-        logger.info(f"Кнопка 'Крепкий алкоголь' --- {call.message.from_user.first_name}")
+        logger.info(f"Кнопка 'Крепкий алкоголь' --- {call.message.chat.from_user.first_name}")
         cashInfo.bcode_otdel = '1'
         bcode = bot.send_message(call.message.chat.id, 'Напишите штрихкод товара:')
         bot.register_next_step_handler(bcode, set_barcode)
 
     if call.data == 'cb_barcodes_beer':
-        logger.info(f"Кнопка 'Пиво' --- {call.message.from_user.first_name}")
+        logger.info(f"Кнопка 'Пиво' --- {call.message.chat.from_user.first_name}")
         cashInfo.bcode_otdel = '2'
         bcode = bot.send_message(call.message.chat.id, 'Напишите штрихкод товара:')
         bot.register_next_step_handler(bcode, set_barcode)
 
     if call.data == 'cb_barcodes_cigaretes':
-        logger.info(f"Кнопка 'Сигареты' --- {call.message.from_user.first_name}")
+        logger.info(f"Кнопка 'Сигареты' --- {call.message.chat.from_user.first_name}")
         cashInfo.bcode_otdel = '3'
         bcode = bot.send_message(call.message.chat.id, 'Напишите штрихкод товара:')
         bot.register_next_step_handler(bcode, set_barcode)
 
     if call.data == 'cb_barcodes_other':
-        logger.info(f"Кнопка 'Прочее' --- {call.message.from_user.first_name}")
+        logger.info(f"Кнопка 'Прочее' --- {call.message.chat.from_user.first_name}")
         cashInfo.bcode_otdel = '4'
         cashInfo.bcode = functions.get_valid_barcode(cashInfo.bcode_cash_number)
         msg = bot.send_message(call.message.chat.id, "Напишите короткое название товара:")
@@ -101,7 +100,7 @@ def callback_query(call):
 
     # Ostatki
     if call.data == 'cb_get_ostatki':
-        logger.info(f"Кнопка 'получить остатки' --- {call.message.from_user.first_name}")
+        logger.info(f"Кнопка 'получить остатки' --- {call.message.chat.from_user.first_name}")
         markup = types.InlineKeyboardMarkup()
         button_lastOstatki = types.InlineKeyboardButton("Последние остатки", callback_data='cb_last_ostatki')
         button_listOstatki = types.InlineKeyboardButton("Список по датам", callback_data='cb_list_ostatki')
@@ -112,12 +111,12 @@ def callback_query(call):
                          reply_markup=markup, parse_mode='html')
 
     if call.data == 'cb_last_ostatki':
-        logger.info(f"Кнопка 'Последние остатки' --- {call.message.from_user.first_name}")
+        logger.info(f"Кнопка 'Последние остатки' --- {call.message.chat.from_user.first_name}")
         msg = bot.send_message(call.message.chat.id, 'Напишите номер компьютера:')
         bot.register_next_step_handler(msg, send_last_file)
 
     if call.data == 'cb_list_ostatki':
-        logger.info(f"Кнопка 'Список остатков' --- {call.message.from_user.first_name}")
+        logger.info(f"Кнопка 'Список остатков' --- {call.message.chat.from_user.first_name}")
         msg = bot.send_message(call.message.chat.id, 'Напишите номер компьютера:')
         bot.register_next_step_handler(msg, send_dates_files)
     # send email
@@ -130,9 +129,9 @@ def callback_query(call):
             logger.error(f'{ex} --- {cashInfo.cash_number}')
     # MarkUP
     if call.data == 'cb_click_form':
-        logger.info(f"Кнопка 'Оставить отзыв' --- {call.message.from_user.first_name}")
+        logger.info(f"Кнопка 'Оставить отзыв' --- {call.message.chat.from_user.first_name}")
     if call.data == 'cb_WhatsApp_markup':
-        logger.info(f"Кнопка 'Тех.Поддержка' --- {call.message.from_user.first_name}")
+        logger.info(f"Кнопка 'Тех.Поддержка' --- {call.message.chat.from_user.first_name}")
 
 
 def start_select(message):
