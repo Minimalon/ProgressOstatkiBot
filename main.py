@@ -33,7 +33,7 @@ def start(message):
 
 @bot.message_handler(content_types=['text'])
 def catalog(message):
-    if re.fullmatch(r".*Остатки*|.*остатки*", message.text):
+    if re.fullmatch(r".*Остатки.*|.*остатки.*", message.text):
         bot.send_message(message.chat.id, 'Вам нужно только нажимать на кнопки под текстом и следовать указанием')
         start_select(message)
     #
@@ -322,7 +322,7 @@ def send_file(message):
 
 def send_email(message):
     try:
-        regex = re.compile(r'([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+')
+        regex = re.compile(r'.+@.+\..+')
 
         if re.fullmatch(regex, message.text):
             functions.send_email(message.text, cashInfo.current_path_file)
